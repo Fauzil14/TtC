@@ -15,12 +15,14 @@ class CreatePenyetoransTable extends Migration
     {
         Schema::create('penyetorans', function (Blueprint $table) {
             $table->id();
-            $table->date('hari/tanggal');
-            $table->foreignId('user_id')->constrained('users');
-            $table->text('lokasi');
+            $table->date('tanggal');
+            $table->foreignId('nasabah_id')->constrained('users');
+            $table->foreignId('pengurus1_id')->constrained('users');
             $table->enum('keterangan_penyetoran', ['diantar', 'dijemput']);
+            $table->text('lokasi');
+            $table->decimal('total_berat', 8, 2);
             $table->decimal('total_debit', 10, 2);
-            $table->tinyInteger('status');
+            $table->enum('status', ['selesai', 'dalam_proses']);
             $table->timestamps();
         });
     }

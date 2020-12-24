@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateSampahsTable extends Migration
+class CreateGolonganSampahsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,9 @@ class CreateSampahsTable extends Migration
      */
     public function up()
     {
-        Schema::create('sampahs', function (Blueprint $table) {
+        Schema::create('golongan_sampahs', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('golongan_sampah_id')->constrained('golongan_sampahs');
-            $table->string('jenis_sampah');
-            $table->string('contoh')->nullable();
-            $table->decimal('harga_perkilogram', 8, 2);
+            $table->string('golongan');
             $table->timestamps();
         });
     }
@@ -30,6 +27,6 @@ class CreateSampahsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('sampahs');
+        Schema::dropIfExists('golongan_sampahs');
     }
 }

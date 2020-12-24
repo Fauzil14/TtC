@@ -15,12 +15,11 @@ class CreatePenjualansTable extends Migration
     {
         Schema::create('penjualans', function (Blueprint $table) {
             $table->id();
-            $table->date('hari/tanggal');
-            $table->foreignId('user_id')->constrained('users');
-            $table->decimal('total_debit_bank', 10, 2);
-            $table->text('lokasi');
+            $table->date('tanggal');
+            $table->foreignId('pengurus2_id')->constrained('users');
             $table->foreignId('pengepul_id')->constrained('pengepuls');
-            $table->tinyInteger('status');
+            $table->text('lokasi');
+            $table->decimal('total_debit_bank', 10, 2);
             $table->timestamps();
         });
     }

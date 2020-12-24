@@ -17,7 +17,7 @@ class CreateTabunganUsersTable extends Migration
             $table->id();
             $table->string('user');
             $table->date('hari/tanggal');
-            $table->enum('keterangan', ['dijemput', 'diantar', 'penarikan']);
+            $table->enum('keterangan', ['diantar', 'dijemput', 'penarikan']);
             $table->string('jenis_sampah');
             $table->decimal('berat', 8, 2);
             $table->decimal('debet', 10, 2);

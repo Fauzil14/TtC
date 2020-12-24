@@ -15,9 +15,9 @@ class CreateTransaksisTable extends Migration
     {
         Schema::create('transaksis', function (Blueprint $table) {
             $table->id();
-            $table->date('hari/tanggal');
-            $table->foreignId('user_id')->constrained('users');
-            $table->enum('keterangan_transaksi', ['setor', 'tarik']);
+            $table->date('tanggal');
+            $table->foreignId('nasabah_id')->constrained('users');
+            $table->enum('keterangan_transaksi', ['diantar', 'dijemput', 'penarikan']);
             $table->foreignId('penyetoran_id')->constrained('penyetorans');
             $table->foreignId('detail_penyetoran_id')->constrained('detail_penyetorans');
             $table->decimal('debet', 10, 2);

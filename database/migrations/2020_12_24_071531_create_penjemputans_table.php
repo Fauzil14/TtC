@@ -15,9 +15,14 @@ class CreatePenjemputansTable extends Migration
     {
         Schema::create('penjemputans', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users');
-            $table->string('lokasi');
-            $table->enum('status', ['permintaan', 'berhasil', 'gagal']);
+            $table->date('tanggal');
+            $table->foreignId('nasabah_id')->constrained('users');
+            $table->string('pengurus');
+            $table->enum('status', ['menunggu', 'berhasil', 'gagal']);
+            $table->text('lokasi');
+            $table->decimal('total_berat', 8, 2);
+            $table->decimal('total_harga', 10, 2);
+            $table->string('image')->nullable();
             $table->timestamps();
         });
     }
