@@ -14,7 +14,20 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::group(['middleware' => 'api', 'prefix' => 'auth'], function($router) {
+Route::group(['middleware' => ['jwt.verify'], 'prefix' => 'auth'], function($router) {
     Route::post('register', 'Api\AuthController@register');
     Route::post('login', 'Api\AuthController@login');
 });
+
+Route::prefix('nasabah')->group(['middleware' => ['jwt.verify']], function() {
+    Route::get('nasabah/home', 'Api\Nasabah\HomeNasabahController@index');
+});
+
+// Route::namespace('Api\PengurusSatu')->prefix('pengurus_satu')->group(['middleware' => ['jwt.verify']], function() {
+//     Route::get('home', 'HomePengurusSatuController@index');
+// });
+
+// Route::namespace('Api\PengurusDua')->prefix('pengurus_dua')->group(['middleware' => ['jwt.verify']], function() {
+//     Route::get('home', 'HomePengurusDuaController@index');
+// });
+

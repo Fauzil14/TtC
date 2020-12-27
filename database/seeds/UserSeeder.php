@@ -8,11 +8,6 @@ use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
     public function run()
     {   
         function randomNumberSequence($requiredLength = 7, $highestDigit = 8) {
@@ -42,7 +37,7 @@ class UserSeeder extends Seeder
                 'password' => $password,
                 'no_telephone' => $phonenumber[0],
                 'profile_picture' => 'https://via.placeholder.com/150/0000FF/000000?text=User'
-            ]);
+        ]);
 
         $nasabah2 = User::create([ 
                 'name' => 'Yamin',
@@ -51,7 +46,7 @@ class UserSeeder extends Seeder
                 'password' => $password,
                 'no_telephone' => $phonenumber[1],
                 'profile_picture' => 'https://via.placeholder.com/150/0000FF/000000?text=User'
-            ]);
+        ]);
 
         $pengurus_1 = User::create([ 
                 'name' => 'Pengurus 1',
@@ -60,7 +55,7 @@ class UserSeeder extends Seeder
                 'password' => $password,
                 'no_telephone' => $phonenumber[2],
                 'profile_picture' => 'https://via.placeholder.com/150/0000FF/000000?text=User'
-            ]);
+        ]);
 
         $pengurus_2 = User::create([ 
                 'name' => 'Pengurus 2',
@@ -69,7 +64,7 @@ class UserSeeder extends Seeder
                 'password' => $password,
                 'no_telephone' => $phonenumber[3],
                 'profile_picture' => 'https://via.placeholder.com/150/0000FF/000000?text=User'
-            ]);
+        ]);
 
         $bendahara = User::create([ 
                 'name' => 'Bendahara',
@@ -78,7 +73,7 @@ class UserSeeder extends Seeder
                 'password' => $password,
                 'no_telephone' => $phonenumber[4],
                 'profile_picture' => 'https://via.placeholder.com/150/0000FF/000000?text=User'
-            ]);
+        ]);
 
         $admin = User::create([ 
                 'name' => 'Admin',

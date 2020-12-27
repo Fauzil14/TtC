@@ -25,7 +25,10 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $role = Role::where('id', Auth::user()->role_id)->get('role');
+        $role = Role::whereHas('users', function($q) {
+            return $q->where('users.id', Auth::user()->id);
+        })->get();
+
         $roles = Role::all();
         $message = "this page is for treasurer";
 

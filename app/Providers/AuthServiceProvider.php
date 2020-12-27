@@ -26,32 +26,24 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
 
         //GATE
-            // Gate::define('nasabah', function($user) {
-            //     return $user->roles()->role == 'Nasabah';
-            // });
+        Gate::define('nasabah', function($user) {
+            return $user->hasRole('nasabah');
+        });
 
-            // Gate::define('pengurus-1', function($user) {
-            //     return $user->hasRole('Pengurus 1');
-            // });
+        Gate::define('pengurus-1', function($user) {
+            return $user->hasRole('pengurus satu');
+        });
 
-            // Gate::define('pengurus-2', function($user) {
-            //     return $user->hasRole('Pengurus 2');
-            // });
-
-        // Gate::define('bendahara', function($user) {
-        //     return $user->role_id == 4;
-        // });
-
-        // Gate::define('admin', function($user) {
-        //     return $user->role_id == 5;
-        // });
+        Gate::define('pengurus-2', function($user) {
+            return $user->hasRole('pengurus dua');
+        });
 
         Gate::define('bendahara', function($user) {
-            return $user->hasRole('Bendahara');
+            return $user->hasRole('bendahara');
         });
 
         Gate::define('admin', function($user) {
-            return $user->hasRole('Admin');
+            return $user->hasRole('admin');
         });
     }
 }

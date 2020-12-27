@@ -54,10 +54,7 @@ class User extends Authenticatable implements MustVerifyEmail, JWTSubject
         return $this->belongsToMany('App\Role');
     }
 
-    // public function hasRole($role) {
-    //     $role_id = Role::where('role', $role)->get('id');
-    //     if ( parent::where('role_id', $role_id)) {
-    //         return true;
-    //     } else false;
-    // }
+    public function hasRole($role) {
+        return $this->roles()->where('role_name', $role)->first() ? TRUE : FALSE;
+    }
 }
