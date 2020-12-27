@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Role;
 use App\User;
-use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Http\Request;
+use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Resources\Auth\UserResource;
 use Illuminate\Support\Facades\Validator;
 use Tymon\JWTAuth\Exceptions\JWTException;
 
@@ -24,7 +26,9 @@ class AuthController extends Controller
             return response()->json(['error' => 'could_not_create_token'], 500);
         }
 
-        return response()->json(compact('token'));
+        $user = UserResource::collection(User::where('email', $request->email)->get());
+
+        return response()->json(compact('user', 'token'));
     }
 
     public function register(Request $request)
@@ -44,6 +48,9 @@ class AuthController extends Controller
             'email' => $request->get('email'),
             'password' => Hash::make($request->get('password')),
         ]);
+        
+        $nasabahRole = Role::where('role_name', 'nasabah')->first();
+        $user->roles()->attach($nasabahRole);
 
         $token = JWTAuth::fromUser($user);
 
