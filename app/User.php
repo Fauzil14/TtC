@@ -2,10 +2,11 @@
 
 namespace App;
 
+use App\Role;
+use Tymon\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements MustVerifyEmail, JWTSubject
 {
@@ -48,4 +49,15 @@ class User extends Authenticatable implements MustVerifyEmail, JWTSubject
     {
         return [];
     }
+
+    public function roles() {
+        return $this->belongsToMany('App\Role');
+    }
+
+    // public function hasRole($role) {
+    //     $role_id = Role::where('role', $role)->get('id');
+    //     if ( parent::where('role_id', $role_id)) {
+    //         return true;
+    //     } else false;
+    // }
 }

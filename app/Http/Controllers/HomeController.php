@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Role;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
@@ -23,6 +25,11 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $role = Role::where('id', Auth::user()->role_id)->get('role');
+        $roles = Role::all();
+        $message = "this page is for treasurer";
+
+        return view('test')->with(compact(['role', 'roles', 'message']));
     }
+
 }
