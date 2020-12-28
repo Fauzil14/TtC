@@ -25,8 +25,8 @@ class UserSeeder extends Seeder
         $password = Hash::make('password');
 
         $nasabahRole = Role::where('role_name', 'nasabah')->first();
-        $pengurus_1Role = Role::where('role_name', 'pengurus_1')->first();
-        $pengurus_2Role = Role::where('role_name', 'pengurus_2')->first();
+        $pengurus_1Role = Role::where('role_name', 'pengurus satu')->first();
+        $pengurus_2Role = Role::where('role_name', 'pengurus dua')->first();
         $bendaharaRole = Role::where('role_name', 'bendahara')->first();
         $adminRole = Role::where('role_name', 'admin')->first();
         

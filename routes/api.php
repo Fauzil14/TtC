@@ -14,13 +14,16 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::group(['middleware' => ['jwt.verify'], 'prefix' => 'auth'], function($router) {
+Route::group([ 'prefix' => 'auth' ], function($router) {
     Route::post('register', 'Api\AuthController@register');
     Route::post('login', 'Api\AuthController@login');
 });
 
-Route::prefix('nasabah')->group(['middleware' => ['jwt.verify']], function() {
-    Route::get('nasabah/home', 'Api\Nasabah\HomeNasabahController@index');
+// Route::get('/home', 'Api\Nasabah\HomeNasabahController@index')->middleware('jwt.verify', 'can:nasabah');
+
+Route::prefix('nasabah')->namespace('Api\Nasabah')->middleware(['jwt.verify', 'can:nasabah'])->group(function() {
+    Route::get('home', 'HomeNasabahController@index');
+    Route::get('profile', 'NasabahController@getAuthenticatedUser');
 });
 
 // Route::namespace('Api\PengurusSatu')->prefix('pengurus_satu')->group(['middleware' => ['jwt.verify']], function() {
