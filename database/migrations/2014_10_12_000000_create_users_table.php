@@ -21,7 +21,7 @@ class CreateUsersTable extends Migration
             $table->string('password');
             $table->string('no_telephone')->nullable();
             $table->text('location')->nullable();
-            $table->string('profile_picture')->nullable();
+            $table->string('profile_picture')->default('https://via.placeholder.com/150/0000FF/000000?text=User');
             $table->rememberToken();
             $table->timestamps();
         });
