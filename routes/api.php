@@ -24,6 +24,7 @@ Route::group([ 'prefix' => 'auth' ], function($router) {
 Route::prefix('nasabah')->namespace('Api\Nasabah')->middleware(['jwt.verify', 'can:nasabah'])->group(function() {
     Route::get('home', 'HomeNasabahController@index');
     Route::get('profile', 'NasabahController@getAuthenticatedUser');
+    Route::put('profile/update', 'NasabahController@updateProfileNasabah');
 });
 
 // Route::namespace('Api\PengurusSatu')->prefix('pengurus_satu')->group(['middleware' => ['jwt.verify']], function() {
