@@ -10,6 +10,7 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\Auth\UserResource;
+use Illuminate\Support\Facades\Validator;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 use Tymon\JWTAuth\Exceptions\TokenInvalidException;
@@ -53,18 +54,18 @@ class NasabahController extends Controller
         $authUser = User::find(Auth::id());
 
         $request->validate([
-            'name' => 'required|string',
-            'email' => [
-                'required', 
-                'email', 
-                Rule::unique('users')->ignore($authUser->id),
-            ],
-            'no_telephone' => [
-                        'required',
-                        Rule::unique('users')->ignore($authUser->id),
-                    ],
+            'name'            => ['required', 'string'],
+            'email'           => [
+                                    'required', 
+                                    'email', 
+                                    Rule::unique('users')->ignore($authUser->id),
+                                 ],
+            'no_telephone'    => [
+                                    'required',
+                                    Rule::unique('users')->ignore($authUser->id),
+                                 ],
             // 'location' => '',
-            'profile_picture' => 'image|max:2048|mimes:jpg,jpeg,png',
+            'profile_picture' => ['image', 'max:2048', 'mimes:jpg,jpeg,png'],
         ]);
 
         if(!empty($request->profile_picture)) {
@@ -87,6 +88,7 @@ class NasabahController extends Controller
             $pp = $authUser->profile_picture;
         }
 
+        // forget = The forget method removes an item from the collection by its key
         $request = collect($request->toArray())->forget('profile_picture');
 
         if($request->has('_method')) {
