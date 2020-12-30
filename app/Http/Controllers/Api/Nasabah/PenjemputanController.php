@@ -28,7 +28,6 @@ class PenjemputanController extends Controller
             'lokasi'        => $lokasi,
         ]);
 
-
         foreach($sampahs as $sampah) {
             $harga = $tabel_sampah->firstWhere('id', "{$sampah['sampah_id']}");
             $harga_j = $harga->harga_perkilogram - ($harga->harga_perkilogram * 0.2);
@@ -53,6 +52,5 @@ class PenjemputanController extends Controller
         
         $data = $pj->where('id', $old_pj->id)->with('detail_penjemputan')->get();
         return $this->sendResponse('succes', 'Pickup request sent successfully', $data, 201);
-        
     }
 }

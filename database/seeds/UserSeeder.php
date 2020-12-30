@@ -84,8 +84,18 @@ class UserSeeder extends Seeder
                 'profile_picture' => 'https://via.placeholder.com/150/0000FF/000000?text=User'
         ]);
 
+        $nasabah3 = User::create([ 
+                'name' => 'Nasabah test',
+                'email' => 'nasabahtest@gmail.com',
+                'email_verified_at' => now(),
+                'password' => $password,
+                'no_telephone' => $phonenumber[6],
+                'profile_picture' => 'https://via.placeholder.com/150/0000FF/000000?text=User'
+        ]);
+
         $nasabah1->roles()->attach($nasabahRole);
         $nasabah2->roles()->attach($nasabahRole);
+        $nasabah3->roles()->attach($nasabahRole);
         $pengurus_1->roles()->attach($pengurus_1Role);
         $pengurus_2->roles()->attach($pengurus_2Role);
         $bendahara->roles()->attach($bendaharaRole);
