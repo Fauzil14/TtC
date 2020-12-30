@@ -16,4 +16,16 @@ class Penjemputan extends Model
                             'total_harga',
                             'image',
                           ];
+
+    public function nasabah() {
+      return $this->hasOne('App\User');
+    }
+
+    public function pengurus_satu() {
+      return $this->hasOne('App\User');
+    }
+
+    public function detail_penjemputan() {
+      return $this->hasMany('App\DetailPenjemputan');
+    }
 }
