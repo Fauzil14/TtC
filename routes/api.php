@@ -37,9 +37,9 @@ Route::prefix('nasabah')->namespace('Api\Nasabah')->middleware(['jwt.verify', 'c
     });
 });
 
-// Route::namespace('Api\PengurusSatu')->prefix('pengurus_satu')->group(['middleware' => ['jwt.verify']], function() {
-//     Route::get('home', 'HomePengurusSatuController@index');
-// });
+Route::prefix('pengurus_satu')->namespace('Api\PengurusSatu')->middleware(['jwt.verify', 'can:pengurus-1'])->group(function() {
+    Route::get('home', 'HomePengurusSatuController@index');
+});
 
 // Route::namespace('Api\PengurusDua')->prefix('pengurus_dua')->group(['middleware' => ['jwt.verify']], function() {
 //     Route::get('home', 'HomePengurusDuaController@index');

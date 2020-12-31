@@ -14,7 +14,7 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 
 class AuthController extends Controller
 {
-    public function login(Request $request)
+    public function login(Request $request, User $user)
     {
         $credentials = $request->only('email', 'password');
 
@@ -26,7 +26,7 @@ class AuthController extends Controller
             return response()->json(['error' => 'could_not_create_token'], 500);
         }
 
-        $user = UserResource::collection(User::where('email', $request->email)->get());
+        $user = new UserResource($user->firstWhere('email', $request->email));
 
         return response()->json(compact('user', 'token'));
     }
