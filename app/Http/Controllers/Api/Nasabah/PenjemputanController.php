@@ -12,7 +12,8 @@ use Illuminate\Support\Facades\Auth;
 
 class PenjemputanController extends Controller
 {
-    public function requestPenjemputan(Request $request, Penjemputan $pj, DetailPenjemputan $d_pj, Carbon $carbon, Sampah $tabel_sampah) {
+    public function requestPenjemputan(Request $request, Penjemputan $pj, DetailPenjemputan $d_pj, Carbon $carbon, Sampah $tabel_sampah) 
+    {
         
         $tanggal = $carbon->now()->toDateString();
         $pengurus1_id = $request->pengurus1_id;
@@ -29,15 +30,16 @@ class PenjemputanController extends Controller
 
         if(!empty($sampahs)) {
             foreach($sampahs as $sampah) {
-                $harga = $tabel_sampah->firstWhere('id', "{$sampah['sampah_id']}");
-                $harga_j = $harga->harga_perkilogram + ($harga->harga_perkilogram * 0.2);
+                $harga = $tabel_sampah->firstWhere('id', "{$sampah['sampah_id']}")->harga_perkilogram;
+                $harga_j = $harga + ($harga * 0.2);
                 $d_pj->updateOrCreate([
-                                        'penjemputan_id' => $old_pj->id,
-                                        'sampah_id'      => $sampah['sampah_id'],
+                                        'penjemputan_id'    => $old_pj->id,
+                                        'sampah_id'         => $sampah['sampah_id'],
                                       ],
                                       [
-                                        'berat'          => $sampah['berat'],
-                                        'harga'          => $harga_j,
+                                        'berat'             => $sampah['berat'],
+                                        'harga_perkilogram' => $harga_j,
+                                        'harga'             => $harga_j * $sampah['berat'],
                                       ]);
             }
             
@@ -51,12 +53,32 @@ class PenjemputanController extends Controller
         return $this->sendResponse('succes', 'Pickup request sent successfully', $data, 201);
     }
 
-    public function batalkanRequestPenjemputan($id) {
+    public function batalkanBarangRequestPenjemputan($id, Penjemputan $pj, DetailPenjemputan $d_pj) 
+    {
+
+        $d_pj = $d_pj->firstWhere('id', $id);
+        $pj_id = $d_pj->penjemputan_id;
+        $d_pj->delete();
+
+        $pj->where('id', $pj_id)->update([
+            'total_berat' => $d_pj->where('penjemputan_id', $pj_id)->sum('berat'),
+            'total_harga' => $d_pj->where('penjemputan_id', $pj_id)->sum('harga'),
+        ]);
+
+        try {
+            return $this->sendResponse('succes', 'Pickup data has been succesfully deleted', (bool) $d_pj, 200);
+        } catch(\Throwable $e) {
+            return $this->sendResponse('failed', 'Pickup data failed to delete', null, 500);
+        }
+    }
+
+    public function batalkanRequestPenjemputan($id) 
+    {
 
         $pj = Penjemputan::destroy($id);
 
         try {
-            return $this->sendResponse('succes', 'Pickup data has been succesfully deleted', $pj, 200);
+            return $this->sendResponse('succes', 'Pickup data has been succesfully deleted', (bool) $pj, 200);
         } catch(\Throwable $e) {
             return $this->sendResponse('failed', 'Pickup data failed to delete', null, 500);
         }

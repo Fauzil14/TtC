@@ -19,10 +19,10 @@ class CreatePenyetoransTable extends Migration
             $table->foreignId('nasabah_id')->constrained('users');
             $table->foreignId('pengurus1_id')->constrained('users');
             $table->enum('keterangan_penyetoran', ['diantar', 'dijemput']);
-            $table->text('lokasi');
-            $table->decimal('total_berat', 8, 2);
-            $table->decimal('total_debit', 10, 2);
-            $table->enum('status', ['selesai', 'dalam_proses']);
+            $table->text('lokasi')->nullable();
+            $table->decimal('total_berat', 8, 2)->nullable();
+            $table->decimal('total_debit', 10, 2)->nullable();
+            $table->enum('status', ['selesai', 'dalam proses']);
             $table->timestamps();
         });
     }

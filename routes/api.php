@@ -33,12 +33,21 @@ Route::prefix('nasabah')->namespace('Api\Nasabah')->middleware(['jwt.verify', 'c
     // penjemputan
     Route::prefix('penjemputan')->group(function() {
         Route::post('request', 'PenjemputanController@requestPenjemputan');
-        Route::delete('request/cancel/{id}', 'PenjemputanController@batalkanRequestPenjemputan');
+        Route::delete('request/cancel/{penjemputan_id}', 'PenjemputanController@batalkanRequestPenjemputan');
+        Route::delete('request/cancel-item/{detail_penjemputan_id}', 'PenjemputanController@batalkanBarangRequestPenjemputan');
     });
 });
 
-Route::prefix('pengurus_satu')->namespace('Api\PengurusSatu')->middleware(['jwt.verify', 'can:pengurus-1'])->group(function() {
+
+Route::prefix('pengurus_satu')->namespace('Api\PengurusSatu')->middleware(['jwt.verify', 'can:pengurus-satu'])->group(function() {
     Route::get('home', 'HomePengurusSatuController@index');
+
+    //penyetoran
+    Route::prefix('penyetoran')->group(function() {
+        Route::get('/', 'PenyetoranController@penyetoranNasabah');
+        Route::get('/show-request', 'PenyetoranController@showNasabahRequest');
+        Route::get('/accept-request/{penjemputan_id}', 'PenyetoranController@acceptNasabahRequest');
+    });
 });
 
 // Route::namespace('Api\PengurusDua')->prefix('pengurus_dua')->group(['middleware' => ['jwt.verify']], function() {

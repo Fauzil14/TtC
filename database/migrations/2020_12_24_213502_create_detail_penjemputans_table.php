@@ -18,6 +18,7 @@ class CreateDetailPenjemputansTable extends Migration
             $table->foreignId('penjemputan_id')->constrained('penjemputans');
             $table->foreignId('sampah_id')->constrained('sampahs');
             $table->decimal('berat', 8, 2);
+            $table->decimal('harga_perkilogram', 10, 2);
             $table->decimal('harga', 10, 2);
             $table->timestamps();
         });

@@ -10,6 +10,7 @@ class DetailPenjemputan extends Model
                             'penjemputan_id',
                             'sampah_id',
                             'berat',
+                            'harga_perkilogram',
                             'harga',
                           ];
 
