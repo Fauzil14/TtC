@@ -32,6 +32,7 @@ Route::prefix('nasabah')->namespace('Api\Nasabah')->middleware(['jwt.verify', 'c
 
     // penjemputan
     Route::prefix('penjemputan')->group(function() {
+        Route::get('show-request', 'PenjemputanController@showRequestPenjemputan');
         Route::post('request', 'PenjemputanController@requestPenjemputan');
         Route::delete('request/cancel/{penjemputan_id}', 'PenjemputanController@batalkanRequestPenjemputan');
         Route::delete('request/cancel-item/{detail_penjemputan_id}', 'PenjemputanController@batalkanBarangRequestPenjemputan');

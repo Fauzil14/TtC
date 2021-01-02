@@ -12,6 +12,17 @@ use Illuminate\Support\Facades\Auth;
 
 class PenjemputanController extends Controller
 {
+    public function showRequestPenjemputan(Penjemputan $pj) 
+    {
+        $data = $pj->where('nasabah_id', Auth::id())->with('detail_penjemputan')->get();
+        
+        try {
+            return $this->sendResponse('succes', 'Pickup data has been succesfully get', $data, 200);
+        } catch(\Throwable $e) {
+            return $this->sendResponse('failed', 'Pickup data failed to get', null, 500);
+        }
+    }
+    
     public function requestPenjemputan(Request $request, Penjemputan $pj, DetailPenjemputan $d_pj, Carbon $carbon, Sampah $tabel_sampah) 
     {
         
@@ -55,8 +66,13 @@ class PenjemputanController extends Controller
 
     public function batalkanBarangRequestPenjemputan($id, Penjemputan $pj, DetailPenjemputan $d_pj) 
     {
-
+        
         $d_pj = $d_pj->firstWhere('id', $id);
+        
+        if(empty($d_pj) || $pj->firstWhere('id', $d_pj->penjemputan_id)->status != 'menunggu') {
+            return $this->sendResponse('failed', 'Pickup data cannot be deleted', null, 400);
+        }
+
         $pj_id = $d_pj->penjemputan_id;
         $d_pj->delete();
 
@@ -72,15 +88,14 @@ class PenjemputanController extends Controller
         }
     }
 
-    public function batalkanRequestPenjemputan($id) 
+    public function batalkanRequestPenjemputan($id, Penjemputan $pj) 
     {
 
-        $pj = Penjemputan::destroy($id);
-
-        try {
-            return $this->sendResponse('succes', 'Pickup data has been succesfully deleted', (bool) $pj, 200);
-        } catch(\Throwable $e) {
-            return $this->sendResponse('failed', 'Pickup data failed to delete', null, 500);
+        if($pj->where('id', $id)->where('status', 'menunggu')->exists()) {
+            $pj->destroy($id);
+            return $this->sendResponse('succes', 'Pickup data has been succesfully deleted', true, 200);
+        } else {
+            return $this->sendResponse('failed', 'Pickup data cannot be deleted', false, 404);
         }
     }
 }

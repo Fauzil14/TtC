@@ -17,8 +17,9 @@ class PenyetoranController extends Controller
     public function showNasabahRequest(Penjemputan $pj) 
     {
         $data = $pj->where('pengurus1_id', Auth::id())
-                    ->where('status', 'menunggu')
-                    ->with('detail_penjemputan')->get();
+                   ->where('status', 'menunggu')
+                   ->with('detail_penjemputan')
+                   ->get();
         
         try {
             return $this->sendResponse('succes', 'Request data has been succesfully get', $data, 200);
@@ -30,9 +31,10 @@ class PenyetoranController extends Controller
     public function acceptNasabahRequest($pj_id , Penyetoran $pt, Penjemputan $pj, DetailPenjemputan $d_pj) 
     {
         $pj = $pj->where('id', $pj_id)
-                    ->where('pengurus1_id', Auth::id())
-                    ->where('status', 'menunggu')
-                    ->first();
+                 ->where('pengurus1_id', Auth::id())
+                 ->where('status', 'menunggu')
+                 ->first();
+                 
         $d_pj = $d_pj->where('penjemputan_id', $pj_id)->get()->toArray();
 
         $data = DB::transaction(function() use($pt, $pj, $d_pj){
