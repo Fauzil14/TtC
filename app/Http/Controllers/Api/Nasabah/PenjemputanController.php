@@ -25,7 +25,6 @@ class PenjemputanController extends Controller
     
     public function requestPenjemputan(Request $request, Penjemputan $pj, DetailPenjemputan $d_pj, Carbon $carbon, Sampah $tabel_sampah) 
     {
-        
         $tanggal = $carbon->now()->toDateString();
         $pengurus1_id = $request->pengurus1_id;
         $lokasi = $request->lokasi;
@@ -98,4 +97,6 @@ class PenjemputanController extends Controller
             return $this->sendResponse('failed', 'Pickup data cannot be deleted', false, 404);
         }
     }
+
+
 }

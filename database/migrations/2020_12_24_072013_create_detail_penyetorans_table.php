@@ -20,7 +20,6 @@ class CreateDetailPenyetoransTable extends Migration
             $table->decimal('berat', 8, 2);
             $table->decimal('harga', 10, 2);
             $table->decimal('debit_nasabah', 10, 2);
-            $table->enum('status', ['menunggu' ,'diterima', 'ditolak']);
             $table->timestamps();
         });
     }

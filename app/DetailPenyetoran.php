@@ -12,7 +12,6 @@ class DetailPenyetoran extends Model
                             'berat',
                             'harga',
                             'debit_nasabah',
-                            'status',
                           ];
 
     public function penyetoran() {

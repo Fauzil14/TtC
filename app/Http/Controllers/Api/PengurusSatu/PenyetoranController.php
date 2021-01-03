@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\PengurusSatu;
 
+use App\Sampah;
 use Carbon\Carbon;
 use App\Penyetoran;
 use App\Penjemputan;
@@ -34,49 +35,53 @@ class PenyetoranController extends Controller
                  ->where('pengurus1_id', Auth::id())
                  ->where('status', 'menunggu')
                  ->first();
-                 
-        $d_pj = $d_pj->where('penjemputan_id', $pj_id)->get()->toArray();
 
-        $data = DB::transaction(function() use($pt, $pj, $d_pj){
-            $pt = $pt->create([
-                'tanggal'               => $pj->tanggal,
-                'nasabah_id'            => $pj->nasabah_id,
-                'pengurus1_id'          => $pj->pengurus1_id,
-                'keterangan_penyetoran' => "dijemput",
-                'lokasi'                => $pj->lokasi,
-                'total_berat'           => $pj->total_berat,
-                'total_debit'           => $pj->total_harga,
-                'status'                => "dalam proses",
-            ]);
-
-            if(!empty($d_pj)) {
-                foreach($d_pj as $key => $value) {
-                    $pt->detail_penyetoran()->create([
-                        'sampah_id'     => $d_pj[$key]['sampah_id'],
-                        'berat'         => $d_pj[$key]['berat'],
-                        'harga'         => $d_pj[$key]['harga_perkilogram'],
-                        'debit_nasabah' => $d_pj[$key]['harga'],
-                        'status' => "menunggu",
-                    ]);
-                }
-            }
-
-            return $pt->load('detail_penyetoran');
-        });
-
-        if(!empty($data)) {
-            $pj->update(['status' => 'berhasil']);
+        if(!empty($pj)) {
+            $pj->update(['status' => 'diterima']);
         }
 
         try {
-            return $this->sendResponse('succes', 'Request data has been succesfully get', $data, 200);
+            return $this->sendResponse('succes', 'Request data has been succesfully get', $pj, 200);
         } catch(\Throwable $e) {
             return $this->sendResponse('failed', 'Request data failed to get', null, 500);
         }
     }
 
-    public function penyetoranNasabah(Penyetoran $pt, DetailPenyetoran $d_pt, Carbon $carbon) 
+    public function penyetoranNasabah(Request $request, Penyetoran $pt, DetailPenyetoran $d_pt, Carbon $carbon) 
     {
+        $tanggal = $carbon->now()->toDateString();
+
+        $data = DB::transaction(function() use($request, $pt, $d_pt, $tanggal){
+            $pt = $pt->firstOrCreate([
+                'tanggal'               => $tanggal,
+                'nasabah_id'            => $request->nasabah_id,
+                'pengurus1_id'          => $request->pengurus1_id,
+                'keterangan_penyetoran' => $request->keterangan_penyetoran,
+                'lokasi'                => $request->lokasi,
+            ]);
+            
+            $sampahs = $request->sampah;
+            foreach($sampahs as $sampah) {
+                $harga_perkilogram = Sampah::firstWhere('id', $sampah['sampah_id'])->harga_perkilogram;
+                $harga_jemput = $harga_perkilogram + ($harga_perkilogram * 0.2);
+                $pt->detail_penyetoran()->createOrUpdate([
+                    'sampah_id'     => $sampah['sampah_id'],
+                    'berat'         => $sampah['berat'],
+                    'harga'         => $harga_perkilogram,
+                    'debit_nasabah' => $request->keterangan_penyetoran == 'dijemput' 
+                                            ? $harga_jemput * $sampah['berat']
+                                            : $harga_perkilogram * $sampah['berat'],
+                ]);
+            }
+
+            $pt->update([
+                'total_berat' => $d_pt->where('penyetoran_id', $pt->id)->sum('berat'),
+                'total_debit' => $d_pt->where('penyetoran_id', $pt->id)->sum('debit_nasabah'),
+            ]);
+
+            return $pt->load('detail_penyetoran');
+        });
+
 
     }
 }

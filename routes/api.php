@@ -45,7 +45,7 @@ Route::prefix('pengurus_satu')->namespace('Api\PengurusSatu')->middleware(['jwt.
 
     //penyetoran
     Route::prefix('penyetoran')->group(function() {
-        Route::get('/', 'PenyetoranController@penyetoranNasabah');
+        Route::get('/{nasabah_id}', 'PenyetoranController@showFormPenyetoran');
         Route::get('/show-request', 'PenyetoranController@showNasabahRequest');
         Route::get('/accept-request/{penjemputan_id}', 'PenyetoranController@acceptNasabahRequest');
     });

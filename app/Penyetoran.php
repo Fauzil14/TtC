@@ -14,7 +14,6 @@ class Penyetoran extends Model
                             'lokasi',
                             'total_berat',
                             'total_debit',
-                            'status',
                           ];
 
     public function nasabah() {
