@@ -48,6 +48,8 @@ Route::prefix('pengurus_satu')->namespace('Api\PengurusSatu')->middleware(['jwt.
         Route::get('/show-request', 'PenyetoranController@showNasabahRequest');
         Route::get('/accept-request/{penjemputan_id}', 'PenyetoranController@acceptNasabahRequest');
         Route::post('/store', 'PenyetoranController@penyetoranNasabah');
+        Route::get('/show-deposit', 'PenyetoranController@showPenyetoranNasabah');
+        Route::get('/confirm-deposit/{penyetoran_id}', 'PenyetoranController@confirmDepositAsTransaksi');
     });
 });
 

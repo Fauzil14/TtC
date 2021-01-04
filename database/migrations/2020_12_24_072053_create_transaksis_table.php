@@ -19,9 +19,8 @@ class CreateTransaksisTable extends Migration
             $table->foreignId('nasabah_id')->constrained('users');
             $table->enum('keterangan_transaksi', ['diantar', 'dijemput', 'penarikan']);
             $table->foreignId('penyetoran_id')->constrained('penyetorans');
-            $table->foreignId('detail_penyetoran_id')->constrained('detail_penyetorans');
-            $table->decimal('debet', 10, 2);
-            $table->decimal('kredit', 10, 2);
+            $table->decimal('debet', 10, 2)->nullable();
+            $table->decimal('kredit', 10, 2)->nullable();
             $table->timestamps();
         });
     }

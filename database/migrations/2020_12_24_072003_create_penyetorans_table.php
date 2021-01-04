@@ -22,6 +22,7 @@ class CreatePenyetoransTable extends Migration
             $table->text('lokasi')->nullable();
             $table->decimal('total_berat', 8, 2)->nullable();
             $table->decimal('total_debit', 10, 2)->nullable();
+            $table->enum('status', ['dalam proses', 'selesai']);
             $table->timestamps();
         });
     }

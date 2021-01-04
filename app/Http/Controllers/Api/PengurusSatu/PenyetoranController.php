@@ -6,6 +6,7 @@ use App\Sampah;
 use Carbon\Carbon;
 use App\Penyetoran;
 use App\Penjemputan;
+use App\Transaksi;
 use App\DetailPenyetoran;
 use App\DetailPenjemputan;
 use Illuminate\Http\Request;
@@ -57,6 +58,7 @@ class PenyetoranController extends Controller
                 'pengurus1_id'          => Auth::id(),
                 'keterangan_penyetoran' => $request->keterangan_penyetoran,
                 'lokasi'                => $request->lokasi,
+                'status'                => "dalam proses",
             ]);
             
             $sampahs = $request->sampah;
@@ -82,13 +84,64 @@ class PenyetoranController extends Controller
                 'total_debit' => $d_pt->where('penyetoran_id', $pt->id)->sum('debit_nasabah'),
             ]);
 
-            return $pt->load('detail_penyetoran');
+            if($request->auto_confirm == true) {
+                $this->confirmDepositAsTransaksi($pt->id, $request->auto_confirm);
+            }
+
+            return $pt->firstWhere('id', $pt->id)->load('detail_penyetoran');
         });
 
         try {
             return $this->sendResponse('succes', 'Request data has been succesfully get', $data, 200);
         } catch(\Throwable $e) {
             return $this->sendResponse('failed', 'Request data failed to get', null, 500);
+        }
+    }
+
+    public function showPenyetoranNasabah(Penyetoran $pt)
+    {
+        $data = $pt->where('pengurus1_id', Auth::id())
+                   ->where('status', 'dalam proses')
+                   ->with('detail_penyetoran')
+                   ->get();
+
+        try {
+            return $this->sendResponse('succes', 'Deposit data has been succesfully get', $data, 200);
+        } catch(\Throwable $e) {
+            return $this->sendResponse('failed', 'Deposit data failed to get', null, 500);
+        }
+    }
+
+    public function confirmDepositAsTransaksi($penyetoran_id, $auto_confirm = false) 
+    {
+        $pt = Penyetoran::where('id', $penyetoran_id)
+                          ->where('status', 'dalam proses')
+                          ->first();
+        
+        if(empty($pt)) {
+            return $this->sendResponse('failed', 'Deposit data not found or has been confirmed', null, 400);
+        }
+
+        $data = DB::transaction(function() use ($pt) {
+            $transaksi = Transaksi::create([
+                'tanggal' => Carbon::now()->toDateString(),
+                'nasabah_id' => $pt->nasabah_id,
+                'keterangan_transaksi' => $pt->keterangan_penyetoran,
+                'penyetoran_id' => $pt->id,
+                'debet' => $pt->total_debit,
+            ]);
+
+            $pt->update(['status' => 'selesai']);
+
+            return $transaksi;
+        });
+
+        if( $auto_confirm != true ) {
+            try {
+                return $this->sendResponse('succes', 'Deposit data has been succesfully confirmed', $data, 200);
+            } catch(\Throwable $e) {
+                return $this->sendResponse('failed', 'Deposit data failed to confirm', null, 500);
+            }
         }
     }
 }

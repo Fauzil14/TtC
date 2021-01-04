@@ -14,6 +14,7 @@ class Penyetoran extends Model
                             'lokasi',
                             'total_berat',
                             'total_debit',
+                            'status',
                           ];
 
     public function nasabah() {
@@ -26,6 +27,10 @@ class Penyetoran extends Model
 
     public function detail_penyetoran() {
         return $this->hasMany('App\DetailPenyetoran');
+    }
+
+    public function transaksi() {
+        return $this->hasOne('App\Transaksi');
     }
 
 }
