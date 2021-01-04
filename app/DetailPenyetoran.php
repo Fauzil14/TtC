@@ -17,4 +17,8 @@ class DetailPenyetoran extends Model
     public function penyetoran() {
         return $this->hasOne('App\Penyetoran');
     }
+
+    public function sampah() {
+        return $this->hasOne('App\Sampah');
+    }
 }

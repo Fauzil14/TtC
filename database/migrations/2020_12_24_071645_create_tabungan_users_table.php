@@ -15,14 +15,15 @@ class CreateTabunganUsersTable extends Migration
     {
         Schema::create('tabungan_users', function (Blueprint $table) {
             $table->id();
-            $table->string('user');
+            $table->foreignId('nasabah_id')->constrained('users');
+            $table->foreignId('transaksi_id')->constrained('transaksis');
             $table->date('hari/tanggal');
             $table->enum('keterangan', ['diantar', 'dijemput', 'penarikan']);
-            $table->string('jenis_sampah');
-            $table->decimal('berat', 8, 2);
-            $table->decimal('debet', 10, 2);
-            $table->decimal('kredit', 10, 2);
-            $table->decimal('saldo', 10, 2);
+            $table->string('jenis_sampah')->nullable();
+            $table->decimal('berat', 8, 2)->nullable();
+            $table->decimal('debet', 10, 2)->nullable();
+            $table->decimal('kredit', 10, 2)->nullable();
+            $table->decimal('saldo', 10, 2)->nullable();
             $table->timestamps();
         });
     }

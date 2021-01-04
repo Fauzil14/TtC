@@ -9,6 +9,7 @@ use App\Penjemputan;
 use App\Transaksi;
 use App\DetailPenyetoran;
 use App\DetailPenjemputan;
+use App\TabunganUser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
@@ -30,7 +31,7 @@ class PenyetoranController extends Controller
         }
     }
     
-    public function acceptNasabahRequest($pj_id , Penyetoran $pt, Penjemputan $pj, DetailPenjemputan $d_pj) 
+    public function acceptNasabahRequest($pj_id , Penjemputan $pj) 
     {
         $pj = $pj->where('id', $pj_id)
                  ->where('pengurus1_id', Auth::id())
@@ -124,7 +125,7 @@ class PenyetoranController extends Controller
 
         $data = DB::transaction(function() use ($pt) {
             $transaksi = Transaksi::create([
-                'tanggal' => Carbon::now()->toDateString(),
+                'tanggal' => Carbon::now()->toDateTimeString(),
                 'nasabah_id' => $pt->nasabah_id,
                 'keterangan_transaksi' => $pt->keterangan_penyetoran,
                 'penyetoran_id' => $pt->id,
@@ -132,6 +133,23 @@ class PenyetoranController extends Controller
             ]);
 
             $pt->update(['status' => 'selesai']);
+            
+            $dpts = $pt->detail_penyetoran()->get()->toArray();
+            
+            foreach($dpts as $key => $value) {
+                $jenis_sampah = Sampah::firstWhere('id', $dpts[$key]['sampah_id'])->jenis_sampah;
+                $tabunganUser = TabunganUser::latest('id')->where('transaksi_id', $transaksi->id)->first();
+                TabunganUser::create([
+                    'nasabah_id' => $transaksi->nasabah_id,
+                    'transaksi_id' => $transaksi->id,
+                    'hari/tanggal' => $transaksi->tanggal,
+                    'keterangan' => $transaksi->keterangan_transaksi,
+                    'jenis_sampah' => $jenis_sampah,
+                    'berat' => $dpts[$key]['berat'],
+                    'debet' => $dpts[$key]['debit_nasabah'],
+                    'saldo' => empty($tabunganUser->saldo) ? $dpts[$key]['debit_nasabah'] : $tabunganUser->saldo + $dpts[$key]['debit_nasabah'],
+                ]);
+            }
 
             return $transaksi;
         });
