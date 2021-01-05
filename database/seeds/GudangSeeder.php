@@ -1,6 +1,7 @@
 <?php
 
 use App\Gudang;
+use App\Sampah;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -13,8 +14,10 @@ class GudangSeeder extends Seeder
      */
     public function run()
     {
-        DB::insert("INSERT INTO gudangs(sampah_id, total_berat) VALUES 
-            (1, 200), (2, 300), (3, 400), (4, 500)"
-        );
+        $sampah = Sampah::all();
+
+        $sampah->each(function($item) {
+            Gudang::create([ 'sampah_id' => $item->id ]);;
+        });
     }
 }

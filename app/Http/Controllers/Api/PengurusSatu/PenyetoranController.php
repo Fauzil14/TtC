@@ -149,9 +149,7 @@ class PenyetoranController extends Controller
                 
                 $gudang->updateOrCreate(
                                         [ 'sampah_id' => $dpts[$key]['sampah_id'] ],
-                                        [ 'total_berat' => empty($oldStock) ? $dpts[$key]['berat'] 
-                                                                             : $oldStock->total_berat + $dpts[$key]['berat'] 
-                                        ]
+                                        [ 'total_berat' => $oldStock->total_berat + $dpts[$key]['berat'] ]
                                        );
 
                 
