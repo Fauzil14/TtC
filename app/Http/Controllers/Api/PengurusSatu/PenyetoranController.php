@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\PengurusSatu;
 
+use App\Gudang;
 use App\Sampah;
 use Carbon\Carbon;
 use App\Penyetoran;
@@ -136,10 +137,26 @@ class PenyetoranController extends Controller
             
             $dpts = $pt->detail_penyetoran()->get()->toArray();
             
+            $tabunganUser = new TabunganUser;
+            $sampah = new Sampah;
+            $gudang = new Gudang;
+
             foreach($dpts as $key => $value) {
-                $jenis_sampah = Sampah::firstWhere('id', $dpts[$key]['sampah_id'])->jenis_sampah;
-                $tabunganUser = TabunganUser::latest('id')->where('transaksi_id', $transaksi->id)->first();
-                TabunganUser::create([
+                
+                $jenis_sampah = $sampah->firstWhere('id', $dpts[$key]['sampah_id'])->jenis_sampah;
+                
+                $oldStock = $gudang->firstOrCreate(['sampah_id' => $dpts[$key]['sampah_id']])->total_berat;
+                
+                $gudang->updateOrCreate(
+                                        [ 'sampah_id' => $dpts[$key]['sampah_id']],
+                                        [ 'total_berat' => empty($oldStock) ? $dpts[$key]['berat'] 
+                                                                             : $oldStock + $dpts[$key]['berat'] 
+                                        ]
+                                       );
+
+                
+                $oldTabunganUser = $tabunganUser->latest('id')->where('transaksi_id', $transaksi->id)->first();
+                $tabunganUser->create([
                     'nasabah_id' => $transaksi->nasabah_id,
                     'transaksi_id' => $transaksi->id,
                     'hari/tanggal' => $transaksi->tanggal,
@@ -147,7 +164,8 @@ class PenyetoranController extends Controller
                     'jenis_sampah' => $jenis_sampah,
                     'berat' => $dpts[$key]['berat'],
                     'debet' => $dpts[$key]['debit_nasabah'],
-                    'saldo' => empty($tabunganUser->saldo) ? $dpts[$key]['debit_nasabah'] : $tabunganUser->saldo + $dpts[$key]['debit_nasabah'],
+                    'saldo' => empty($oldTabunganUser->saldo) ? $dpts[$key]['debit_nasabah'] 
+                                                              : $oldTabunganUser->saldo + $dpts[$key]['debit_nasabah'],
                 ]);
             }
 

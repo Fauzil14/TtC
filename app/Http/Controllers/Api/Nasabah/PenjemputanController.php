@@ -38,6 +38,8 @@ class PenjemputanController extends Controller
             'lokasi'        => $lokasi,
         ]);
 
+        $data = $old_pj;
+
         if(!empty($sampahs)) {
             foreach($sampahs as $sampah) {
                 $harga = $tabel_sampah->firstWhere('id', "{$sampah['sampah_id']}")->harga_perkilogram;
@@ -57,9 +59,9 @@ class PenjemputanController extends Controller
                 'total_berat' => $d_pj->where('penjemputan_id', $old_pj->id)->sum('berat'),
                 'total_harga' => $d_pj->where('penjemputan_id', $old_pj->id)->sum('harga'),
             ]);
+            $data = $pj->where('id', $old_pj->id)->with('detail_penjemputan')->get();
         }
         
-        $data = $pj->where('id', $old_pj->id)->with('detail_penjemputan')->get();
         return $this->sendResponse('succes', 'Pickup request sent successfully', $data, 201);
     }
 
@@ -69,7 +71,7 @@ class PenjemputanController extends Controller
         $d_pj = $d_pj->firstWhere('id', $id);
         
         if(empty($d_pj) || $pj->firstWhere('id', $d_pj->penjemputan_id)->status != 'menunggu') {
-            return $this->sendResponse('failed', 'Pickup data cannot be deleted', null, 400);
+            return $this->sendResponse('failed', 'Pickup data not found or cannot be deleted', null, 400);
         }
 
         $pj_id = $d_pj->penjemputan_id;
@@ -87,11 +89,15 @@ class PenjemputanController extends Controller
         }
     }
 
-    public function batalkanRequestPenjemputan($id, Penjemputan $pj) 
+    public function batalkanRequestPenjemputan($id) 
     {
-
-        if($pj->where('id', $id)->where('status', 'menunggu')->exists()) {
-            $pj->destroy($id);
+        $pj = Penjemputan::where('id', $id)->where('status', 'menunggu')->first();
+        if(!empty($pj)) {
+            $d_pj = DetailPenjemputan::where('penjemputan_id', $pj->id)->get();
+            if(!empty($d_pj)) {
+                $pj->detail_penjemputan()->delete();
+            }
+            $pj->where('id', $id)->delete();
             return $this->sendResponse('succes', 'Pickup data has been succesfully deleted', true, 200);
         } else {
             return $this->sendResponse('failed', 'Pickup data cannot be deleted', false, 404);
