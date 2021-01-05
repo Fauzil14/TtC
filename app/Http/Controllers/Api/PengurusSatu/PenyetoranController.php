@@ -145,12 +145,12 @@ class PenyetoranController extends Controller
                 
                 $jenis_sampah = $sampah->firstWhere('id', $dpts[$key]['sampah_id'])->jenis_sampah;
                 
-                $oldStock = $gudang->firstOrCreate(['sampah_id' => $dpts[$key]['sampah_id']])->total_berat;
+                $oldStock = $gudang->firstOrCreate(['sampah_id' => $dpts[$key]['sampah_id']]);
                 
                 $gudang->updateOrCreate(
-                                        [ 'sampah_id' => $dpts[$key]['sampah_id']],
+                                        [ 'sampah_id' => $dpts[$key]['sampah_id'] ],
                                         [ 'total_berat' => empty($oldStock) ? $dpts[$key]['berat'] 
-                                                                             : $oldStock + $dpts[$key]['berat'] 
+                                                                             : $oldStock->total_berat + $dpts[$key]['berat'] 
                                         ]
                                        );
 
