@@ -26,7 +26,11 @@ class AuthController extends Controller
             return response()->json(['error' => 'could_not_create_token'], 500);
         }
 
-        $user = new UserResource($user->firstWhere('email', $request->email));
+        $user = $user->firstWhere('email', $request->email);
+        $role_name = $user->roles()->first()->role_name;
+        $role = [ 'role_name' => $role_name ];
+        $data = array_merge($user->toArray(), $role);
+        return response($data);
 
         return response()->json(compact('user', 'token'));
     }

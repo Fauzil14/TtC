@@ -22,7 +22,7 @@ class UserResource extends JsonResource
             'no_telehone' => $this->no_telephone,
             'location' => $this->location,
             'profile_picture' => $this->profile_picture,
-            'role' => $this->roles[0]->role_name
+            'role' => $this->roles
         ];
     }
 }
