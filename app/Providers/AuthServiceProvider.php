@@ -9,7 +9,6 @@ use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvid
 
 class AuthServiceProvider extends ServiceProvider
 {
-    protected $roles;
 
     /**
      * The policy mappings for the application.
@@ -29,37 +28,35 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        $this->roles = Role::all();
-        
         //GATE
-        Gate::define($this->roles[0]->role_name, function($user) {
-            return $user->hasRole($this->roles[0]->role_name)
+        Gate::define('nasabah', function($user) {
+            return $user->hasRole('nasabah')
                             ? Response::allow()
-                            : Response::deny('Anda harus login sebagai '  . $this->roles[0]->role_name . ' untuk mengakses halaman ini !');
+                            : Response::deny('Anda harus login sebagai nasabah untuk mengakses halaman ini !');
         });
 
-        Gate::define($this->roles[0]->role_name, function($user) {
-            return $user->hasRole($this->roles[0]->role_name)
+        Gate::define('pengurus-satu', function($user) {
+            return $user->hasRole('pengurus-satu')
                             ? Response::allow()
-                            : Response::deny('Anda harus login sebagai '  . $this->roles[0]->role_name . ' untuk mengakses halaman ini !');
+                            : Response::deny('Anda harus login sebagai pengurus-satu untuk mengakses halaman ini !');
         });
 
-        Gate::define($this->roles[0]->role_name, function($user) {
-            return $user->hasRole($this->roles[0]->role_name)
+        Gate::define('pengurus-dua', function($user) {
+            return $user->hasRole('pengurus-dua')
                             ? Response::allow()
-                            : Response::deny('Anda harus login sebagai '  . $this->roles[0]->role_name . ' untuk mengakses halaman ini !');
+                            : Response::deny('Anda harus login sebagai pengurus-dua untuk mengakses halaman ini !');
         });
 
-        Gate::define($this->roles[0]->role_name, function($user) {
-            return $user->hasRole($this->roles[0]->role_name)
+        Gate::define('bendahara', function($user) {
+            return $user->hasRole('bendahara')
                             ? Response::allow()
-                            : Response::deny('Anda harus login sebagai '  . $this->roles[0]->role_name . ' untuk mengakses halaman ini !');
+                            : Response::deny('Anda harus login sebagai bendahara untuk mengakses halaman ini !');
         });
 
-        Gate::define($this->roles[0]->role_name, function($user) {
-            return $user->hasRole($this->roles[0]->role_name)
+        Gate::define('admin', function($user) {
+            return $user->hasRole('admin')
                             ? Response::allow()
-                            : Response::deny('Anda harus login sebagai '  . $this->roles[0]->role_name . ' untuk mengakses halaman ini !');
+                            : Response::deny('Anda harus login sebagai admin untuk mengakses halaman ini !');
         });
         
     }
