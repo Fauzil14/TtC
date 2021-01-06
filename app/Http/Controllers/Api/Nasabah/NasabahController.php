@@ -39,7 +39,9 @@ class NasabahController extends Controller
 
         }
 
-        $user = new UserResource($user);
+        $role_name = $user->roles()->first()->role_name;
+        $role = [ 'role' => $role_name ];
+        $user = array_merge($user->toArray(), $role);
         
         try {
             return $this->sendResponse('succes', 'User data succesfully obtained', $user, 200);
