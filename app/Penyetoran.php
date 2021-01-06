@@ -11,6 +11,7 @@ class Penyetoran extends Model
                             'nasabah_id',
                             'pengurus1_id',
                             'keterangan_penyetoran',
+                            'penjemputan_id',
                             'lokasi',
                             'total_berat',
                             'total_debit',

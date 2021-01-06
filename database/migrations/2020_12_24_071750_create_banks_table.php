@@ -15,9 +15,10 @@ class CreateBanksTable extends Migration
     {
         Schema::create('banks', function (Blueprint $table) {
             $table->id();
-            $table->decimal('total_keuangan', 10, 2);
-            $table->decimal('total_penyetoran_sampah', 10, 2);
-            $table->decimal('total_penjualan_sampah', 10, 2);
+            $table->decimal('total_keuangan', 10, 2)->nullable();
+            $table->decimal('total_debit_nasabah', 10, 2)->nullable();
+            $table->decimal('total_kredit_nasabah', 10, 2)->nullable();
+            $table->decimal('total_penjualan_ke_pengepul', 10, 2)->nullable();
             $table->timestamps();
         });
     }

@@ -53,14 +53,12 @@ class NasabahController extends Controller
         $authUser = User::find(Auth::id());
 
         $request->validate([
-            'name'            => ['required', 'string'],
-            'email'           => [
-                                    'required', 
+            'name'            => ['string'],
+            'email'           => [ 
                                     'email', 
                                     Rule::unique('users')->ignore($authUser->id),
                                  ],
             'no_telephone'    => [
-                                    'required',
                                     Rule::unique('users')->ignore($authUser->id),
                                  ],
             // 'location' => '',

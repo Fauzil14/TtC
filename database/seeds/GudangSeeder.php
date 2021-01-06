@@ -3,7 +3,6 @@
 use App\Gudang;
 use App\Sampah;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
 class GudangSeeder extends Seeder
 {

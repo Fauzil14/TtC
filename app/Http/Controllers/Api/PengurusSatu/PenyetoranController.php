@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers\Api\PengurusSatu;
 
+use App\Bank;
 use App\Gudang;
 use App\Sampah;
+use App\Transaksi;
 use Carbon\Carbon;
 use App\Penyetoran;
 use App\Penjemputan;
-use App\Transaksi;
+use App\TabunganUser;
 use App\DetailPenyetoran;
 use App\DetailPenjemputan;
-use App\TabunganUser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
@@ -59,6 +60,7 @@ class PenyetoranController extends Controller
                 'nasabah_id'            => $request->nasabah_id,
                 'pengurus1_id'          => Auth::id(),
                 'keterangan_penyetoran' => $request->keterangan_penyetoran,
+                'penjemputan_id'        => $request->keterangan_penyetoran == 'dijemput' ? $request->penjemputan_id : null,
                 'lokasi'                => $request->lokasi,
                 'status'                => "dalam proses",
             ]);
@@ -165,6 +167,14 @@ class PenyetoranController extends Controller
                     'saldo' => empty($oldTabunganUser->saldo) ? $dpts[$key]['debit_nasabah'] 
                                                               : $oldTabunganUser->saldo + $dpts[$key]['debit_nasabah'],
                 ]);
+            }
+
+            $bank = new Bank;
+            $bank->total_debit_nasabah += $transaksi->debet;
+            $bank->save();
+
+            if($transaksi->keterangan_transaksi == 'dijemput') {
+                Penjemputan::where('id', $pt->penjemputan_id)->update([ 'status' => 'berhasil' ]);
             }
 
             return $transaksi;
