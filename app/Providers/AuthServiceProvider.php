@@ -29,11 +29,10 @@ class AuthServiceProvider extends ServiceProvider
 
         //GATE
         Gate::define('profile', function($user) {
-            if( $user->hasRole('nasabah') || $user->hasRole('pengurus-satu') || $user->hasRole('pengurus-dua') ) {
-                return Response::allow();
-            } else {
-                return Response::deny('Halaman ini hanya bisa di akses oleh nasabah, pengurus satu, atau pengurus dua !');
-            }
+            return $user->hasAnyRoles(['nasabah', 'pengurus-satu', 'pengurus-dua'])
+                            ? Response::allow()
+                            : Response::deny('Halaman ini hanya bisa di akses oleh nasabah, pengurus satu, atau pengurus dua !');
+
         });
 
         Gate::define('nasabah', function($user) {
