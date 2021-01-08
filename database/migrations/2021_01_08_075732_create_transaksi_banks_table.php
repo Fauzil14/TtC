@@ -18,7 +18,7 @@ class CreateTransaksiBanksTable extends Migration
         
         Schema::create('transaksi_banks', function (Blueprint $table) use ($tanggal) {
             $table->id();
-            $table->date('hari/tanngal')->default($tanggal);
+            $table->date('hari/tanggal')->default($tanggal);
             $table->foreignId('pegawai_id')->constrained('users');
             $table->enum('keterangan_pengurus', ['pengurus-satu', 'pengurus-dua', 'bendahara']);
             $table->enum('keterangan_transaksi', ['debet_nasabah', 'kredit_nasabah', 'penjualan_bank']);

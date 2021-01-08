@@ -84,7 +84,7 @@ class PenjualanController extends Controller
 
     public function confirmSaleAsBankTransaction($pjl_id, $auto_confirm = false) 
     {
-        $pjl = Penjualan::firstWhere('id', $pjl_id);
+        $pjl = Penjualan::firstWher('id', $pjl_id);
         
     }
 

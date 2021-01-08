@@ -14,4 +14,12 @@ class TransaksiBank extends Model
                             'transaksi_id',
                             'penjualan_id',
                           ];
+
+    public function transaksi() {
+        return $this->hasOne('App\Transaksi');
+    }
+
+    public function penjualan() {
+        return $this->hasOne('App\Penjualan');
+    }
 }

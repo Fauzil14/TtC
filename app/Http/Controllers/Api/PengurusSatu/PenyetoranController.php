@@ -159,7 +159,7 @@ class PenyetoranController extends Controller
                                        );
 
                 
-                $oldTabunganUser = $tabunganUser->latest('id')->where('transaksi_id', $transaksi->id)->first();
+                $oldTabunganUser = $tabunganUser->latest('id')->where('nasabah_id', $transaksi->nasabah_id)->first();
                 $tabunganUser->create([
                     'nasabah_id' => $transaksi->nasabah_id,
                     'transaksi_id' => $transaksi->id,
@@ -181,9 +181,9 @@ class PenyetoranController extends Controller
                 'transaksi_id' => $transaksi->id,
             ]);
 
-            $bank = new Bank;
+            $bank = Bank::firstWhere('id', 1);
             $bank->total_debit_nasabah += $transaksi->debet;
-            $bank->save();
+            $bank->update();
 
             if($transaksi->keterangan_transaksi == 'dijemput') {
                 Penjemputan::where('id', $pt->penjemputan_id)->update([ 'status' => 'berhasil' ]);
