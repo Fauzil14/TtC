@@ -19,6 +19,7 @@ class CreateSampahsTable extends Migration
             $table->string('jenis_sampah');
             $table->string('contoh')->nullable();
             $table->decimal('harga_perkilogram', 8, 2);
+            $table->decimal('harga_jual_perkilogram', 8, 2);
             $table->timestamps();
         });
     }

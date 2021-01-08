@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\Nasabah;
+namespace App\Http\Controllers\Api;
 
 use App\User;
 use GuzzleHttp\Client;
@@ -13,9 +13,8 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 use Tymon\JWTAuth\Exceptions\TokenInvalidException;
 
-class NasabahController extends Controller
+class ProfileController extends Controller
 {
-    
     public function getAuthenticatedUser()
     {
         try {
@@ -105,5 +104,4 @@ class NasabahController extends Controller
             return $this->sendResponse('failed', 'User data failed to update', null, 500);
         }
     }
-
 }

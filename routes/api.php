@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Auth\Events\Verified;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -20,16 +21,17 @@ Route::group([ 'prefix' => 'auth' ], function($router) {
 });
 
 // Route::get('/home', 'Api\Nasabah\HomeNasabahController@index')->middleware('jwt.verify', 'can:nasabah');
+   
+// profile
+Route::prefix('profile')->namespace('Api')->middleware(['jwt.verify', 'can:profile'])->group(function() {
+    Route::get('/', 'ProfileController@getAuthenticatedUser');
+    Route::put('/update', 'ProfileController@updateProfileNasabah');
+});
+
 
 Route::prefix('nasabah')->namespace('Api\Nasabah')->middleware(['jwt.verify', 'can:nasabah'])->group(function() {
     Route::get('home', 'HomeNasabahController@index');
-    
-    // profile
-    Route::prefix('profile')->group(function() {
-        Route::get('/', 'NasabahController@getAuthenticatedUser');
-        Route::put('/update', 'NasabahController@updateProfileNasabah');
-    });
-
+ 
     // penjemputan
     Route::prefix('penjemputan')->group(function() {
         Route::get('show-request', 'PenjemputanController@showRequestPenjemputan');
@@ -53,7 +55,12 @@ Route::prefix('pengurus_satu')->namespace('Api\PengurusSatu')->middleware(['jwt.
     });
 });
 
-// Route::namespace('Api\PengurusDua')->prefix('pengurus_dua')->group(['middleware' => ['jwt.verify']], function() {
-//     Route::get('home', 'HomePengurusDuaController@index');
-// });
+Route::prefix('pengurus_dua')->namespace('Api\PengurusDua')->middleware(['jwt.verify', 'can:pengurus-dua'])->group(function() {
+    Route::get('home', 'HomePengurusDuaController@index');
+
+    Route::prefix('penjualan')->group(function() {
+        Route::get('/show-pengepul', 'PenjualanController@showPengepul');
+        Route::post('/sell', 'PenjualanController@sellToPengepul');
+    });
+});
 

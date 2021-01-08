@@ -23,15 +23,14 @@ class PenjemputanController extends Controller
         }
     }
     
-    public function requestPenjemputan(Request $request, Penjemputan $pj, DetailPenjemputan $d_pj, Carbon $carbon, Sampah $tabel_sampah) 
+    public function requestPenjemputan(Request $request, Penjemputan $pj, DetailPenjemputan $d_pj, Sampah $tabel_sampah) 
     {
-        $tanggal = $carbon->now()->toDateString();
         $pengurus1_id = $request->pengurus1_id;
         $lokasi = $request->lokasi;
         $sampahs = $request->sampah;
 
         $old_pj = $pj->firstOrCreate([
-            'tanggal'       => $tanggal,
+            'tanggal'       => Carbon::now()->toDateString(),
             'nasabah_id'    => Auth::id(),
             'pengurus1_id'  => $pengurus1_id,
             'status'        => 'menunggu',

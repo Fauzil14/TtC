@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class CreateBanksTable extends Migration
@@ -21,6 +22,8 @@ class CreateBanksTable extends Migration
             $table->decimal('total_penjualan_ke_pengepul', 10, 2)->nullable();
             $table->timestamps();
         });
+
+        DB::table('banks')->insert([ 'total_keuangan' => 10000000 ]);
     }
 
     /**

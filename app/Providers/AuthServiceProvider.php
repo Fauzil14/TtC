@@ -2,7 +2,6 @@
 
 namespace App\Providers;
 
-use App\Role;
 use Illuminate\Auth\Access\Response;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
@@ -29,6 +28,14 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
 
         //GATE
+        Gate::define('profile', function($user) {
+            if( $user->hasRole('nasabah') || $user->hasRole('pengurus-satu') || $user->hasRole('pengurus-dua') ) {
+                return Response::allow();
+            } else {
+                return Response::deny('Halaman ini hanya bisa di akses oleh nasabah, pengurus satu, atau pengurus dua !');
+            }
+        });
+
         Gate::define('nasabah', function($user) {
             return $user->hasRole('nasabah')
                             ? Response::allow()
@@ -38,13 +45,13 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('pengurus-satu', function($user) {
             return $user->hasRole('pengurus-satu')
                             ? Response::allow()
-                            : Response::deny('Anda harus login sebagai pengurus-satu untuk mengakses halaman ini !');
+                            : Response::deny('Anda harus login sebagai pengurus satu untuk mengakses halaman ini !');
         });
 
         Gate::define('pengurus-dua', function($user) {
             return $user->hasRole('pengurus-dua')
                             ? Response::allow()
-                            : Response::deny('Anda harus login sebagai pengurus-dua untuk mengakses halaman ini !');
+                            : Response::deny('Anda harus login sebagai pengurus dua untuk mengakses halaman ini !');
         });
 
         Gate::define('bendahara', function($user) {

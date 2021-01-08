@@ -16,7 +16,10 @@ class GudangSeeder extends Seeder
         $sampah = Sampah::all();
 
         $sampah->each(function($item) {
-            Gudang::create([ 'sampah_id' => $item->id ]);;
+            Gudang::create([ 
+                            'sampah_id' => $item->id,
+                            'total_berat' => rand(0, 500)
+                            ]);
         });
     }
 }

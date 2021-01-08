@@ -18,6 +18,7 @@ class CreateDetailPenjualansTable extends Migration
             $table->foreignId('penjualan_id')->constrained('penjualans');
             $table->foreignId('sampah_id')->constrained('sampahs');
             $table->decimal('berat', 8, 2);
+            $table->decimal('harga_jual_pengepul', 8, 2);
             $table->decimal('debit_bank', 10, 2);
             $table->timestamps();
         });

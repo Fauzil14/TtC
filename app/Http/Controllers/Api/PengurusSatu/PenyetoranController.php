@@ -10,8 +10,8 @@ use Carbon\Carbon;
 use App\Penyetoran;
 use App\Penjemputan;
 use App\TabunganUser;
+use App\TransaksiBank;
 use App\DetailPenyetoran;
-use App\DetailPenjemputan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
@@ -21,13 +21,14 @@ class PenyetoranController extends Controller
 {
     public function showNasabahRequest(Penjemputan $pj) 
     {
-        $data = $pj->where('pengurus1_id', Auth::id())
-                   ->where('status', 'menunggu')
-                   ->with('detail_penjemputan')
-                   ->get();
+        $pj = $pj->where('pengurus1_id', Auth::id())
+                 ->where('status', 'menunggu')
+                 ->with('detail_penjemputan')
+                 ->get();
         
+
         try {
-            return $this->sendResponse('succes', 'Request data has been succesfully get', $data, 200);
+            return $this->sendResponse('succes', 'Request data has been succesfully get', $pj, 200);
         } catch(\Throwable $e) {
             return $this->sendResponse('failed', 'Request data failed to get', null, 500);
         }
@@ -125,10 +126,13 @@ class PenyetoranController extends Controller
         if(empty($pt)) {
             return $this->sendResponse('failed', 'Deposit data not found or has been confirmed', null, 400);
         }
-
+        
         $data = DB::transaction(function() use ($pt) {
+            
+            $tanggal = Carbon::now()->toDateTimeString();
+            
             $transaksi = Transaksi::create([
-                'tanggal' => Carbon::now()->toDateTimeString(),
+                'tanggal' => $tanggal,
                 'nasabah_id' => $pt->nasabah_id,
                 'keterangan_transaksi' => $pt->keterangan_penyetoran,
                 'penyetoran_id' => $pt->id,
@@ -168,6 +172,14 @@ class PenyetoranController extends Controller
                                                               : $oldTabunganUser->saldo + $dpts[$key]['debit_nasabah'],
                 ]);
             }
+
+            TransaksiBank::create([
+                'tanggal' => $tanggal,
+                'pegawai_id' => $pt->pengurus1_id,
+                'keterangan_pengurus' => 'pengurus-satu',
+                'keterangan_transaksi' => 'debet_nasabah',
+                'transaksi_id' => $transaksi->id,
+            ]);
 
             $bank = new Bank;
             $bank->total_debit_nasabah += $transaksi->debet;
