@@ -16,6 +16,8 @@ class CreateBanksTable extends Migration
     {
         Schema::create('banks', function (Blueprint $table) {
             $table->id();
+            $table->decimal('total_sampah_masuk', 10, 2)->default(0);
+            $table->decimal('total_sampah_keluar', 10, 2)->default(0);
             $table->decimal('total_debit_nasabah', 10, 2)->default(0);
             $table->decimal('total_kredit_nasabah', 10, 2)->default(0);
             $table->decimal('total_penjualan_ke_pengepul', 10, 2)->default(0);

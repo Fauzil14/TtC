@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Api\PengurusDua;
 
+use App\Bank;
 use App\Gudang;
 use App\Sampah;
 use App\Pengepul;
 use App\Penjualan;
 use Carbon\Carbon;
+use App\TransaksiBank;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
@@ -72,6 +74,10 @@ class PenjualanController extends Controller
                           'total_debit_bank'      => $d_pjl->sum('debit_bank'),
                          ]);
             
+            if( $request->auto_confirm == true ) {
+                $this->confirmSaleAsBankTransaction($pjl->id, $request->auto_confirm);
+            }
+            
             return Penjualan::firstWhere('id', $d_pjl->penjualan_id)->load('detail_penjualan');
         });
 
@@ -84,8 +90,49 @@ class PenjualanController extends Controller
 
     public function confirmSaleAsBankTransaction($pjl_id, $auto_confirm = false) 
     {
-        $pjl = Penjualan::firstWher('id', $pjl_id);
+        $pjl = Penjualan::where('id', $pjl_id)
+                          ->where('status', 'dalam proses')
+                          ->first();
         
+        if(empty($pjl)) {
+            return $this->sendResponse('failed', 'Sales data not found or has been confirmed', null, 400);
+        }
+        
+        $data = DB::transaction(function() use ($pjl) {
+
+            $dpjl = $pjl->detail_penjualan()->get();
+
+            $dpjl->each(function($item) {
+                $gudang = Gudang::firstWhere('sampah_id', $item->sampah_id);
+                $gudang->total_berat -= $item->berat;
+                $gudang->update();
+            });
+
+            TransaksiBank::create([
+                'hari/tanggal' => Carbon::now()->toDateTimeString(),
+                'pegawai_id' => $pjl->pengurus2_id,
+                'keterangan_pengurus' => 'pengurus-dua',
+                'keterangan_transaksi' => 'penjualan_bank',
+                'penjualan_id' => $pjl->id,
+            ]);
+
+            $pjl->status = 'selesai';
+            $pjl->update();
+
+            $bank = Bank::firstWhere('id', 1);
+            $bank->total_sampah_keluar += $pjl->total_berat_penjualan;
+            $bank->total_penjualan_ke_pengepul += $pjl->total_debit_bank;
+            $bank->total_saldo += $pjl->total_debit_bank;
+            $bank->update();
+        });
+
+        if( $auto_confirm == false ) {
+            try {
+                return $this->sendResponse('succes', 'Sales data has been succesfully created', $data, 200);
+            } catch(\Throwable $e) {
+                return $this->sendResponse('failed', 'Sales data failed to create', null, 500);
+            }
+        }
     }
 
 }

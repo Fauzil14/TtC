@@ -163,7 +163,7 @@ class PenyetoranController extends Controller
                 $tabunganUser->create([
                     'nasabah_id' => $transaksi->nasabah_id,
                     'transaksi_id' => $transaksi->id,
-                    'hari/tanggal' => $transaksi->tanggal,
+                    'hari/tanggal' => $tanggal,
                     'keterangan' => $transaksi->keterangan_transaksi,
                     'jenis_sampah' => $jenis_sampah,
                     'berat' => $dpts[$key]['berat'],
@@ -182,6 +182,7 @@ class PenyetoranController extends Controller
             ]);
 
             $bank = Bank::firstWhere('id', 1);
+            $bank->total_sampah_masuk += $pt->total_berat;
             $bank->total_debit_nasabah += $transaksi->debet;
             $bank->update();
 
