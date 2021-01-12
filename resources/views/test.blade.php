@@ -15,7 +15,7 @@
                         </div>
                     @endif
 
-                    Kamu login sebagai seorang {{ $role[0]->role_name }}
+                    Kamu login sebagai seorang {{ $role[0]->name }}
                 </div>
             </div>
 
@@ -31,7 +31,7 @@
 
                     @can('admin')
                         @foreach($roles as $role)
-                          {{ $role->role_name }} <br>
+                          {{ $role->name }} <br>
                         @endforeach
                     @elsecan('bendahara')
                         {{ $message }}

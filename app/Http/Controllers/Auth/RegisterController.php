@@ -70,7 +70,7 @@ class RegisterController extends Controller
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
         ]);
-        $nasabahRole = Role::firstWhere('role_name', 'nasabah');
+        $nasabahRole = Role::firstWhere('name', 'nasabah');
         $user->roles()->attach($nasabahRole);
 
         return $user;

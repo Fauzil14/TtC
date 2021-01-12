@@ -54,11 +54,17 @@ class User extends Authenticatable implements MustVerifyEmail, JWTSubject
     }
 
     public function hasAnyRoles($roles) {
-        return $this->roles()->whereIn('role_name', $roles)->first() ? TRUE : FALSE;
+        return $this->roles()->whereIn('name', $roles)->first() ? TRUE : FALSE;
     }
 
     public function hasRole($role) {
-        return $this->roles()->where('role_name', $role)->first() ? TRUE : FALSE;
+        return $this->roles()->where('name', $role)->first() ? TRUE : FALSE;
+    }
+
+    public function whoHasRole($role) {
+        return self::whereHas('roles', function($q) use ($role) {
+            $q->where('name', $role);
+        })->get();
     }
 
     public function penjemputan() {

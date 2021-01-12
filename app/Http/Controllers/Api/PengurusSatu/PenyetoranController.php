@@ -6,6 +6,7 @@ use App\Bank;
 use App\Gudang;
 use App\Sampah;
 use App\Transaksi;
+use App\User;
 use Carbon\Carbon;
 use App\Penyetoran;
 use App\Penjemputan;
@@ -49,6 +50,21 @@ class PenyetoranController extends Controller
             return $this->sendResponse('succes', 'Request data has been succesfully get', $pj, 200);
         } catch(\Throwable $e) {
             return $this->sendResponse('failed', 'Request data failed to get', null, 500);
+        }
+    }
+
+    public function showAllNasabah(User $user) 
+    {
+        // $users = $user->whereHas('roles', function($q) {
+        //     $q->where('name', 'nasabah');
+        // })->get();
+
+        $users = $user->whoHasRole('nasabah');
+
+        try {
+            return $this->sendResponse('succes', 'Users data has been succesfully get', $users, 200);
+        } catch(\Throwable $e) {
+            return $this->sendResponse('failed', 'Users data failed to get', null, 500);
         }
     }
 

@@ -44,11 +44,12 @@ Route::prefix('nasabah')->namespace('Api\Nasabah')->middleware(['jwt.verify', 'c
 
 Route::prefix('pengurus_satu')->namespace('Api\PengurusSatu')->middleware(['jwt.verify', 'can:pengurus-satu'])->group(function() {
     Route::get('home', 'HomePengurusSatuController@index');
-
+    
     //penyetoran
     Route::prefix('penyetoran')->group(function() {
         Route::get('/show-request', 'PenyetoranController@showNasabahRequest');
         Route::get('/accept-request/{penjemputan_id}', 'PenyetoranController@acceptNasabahRequest');
+        Route::get('/show-nasabah-all', 'PenyetoranController@showAllNasabah');
         Route::post('/store', 'PenyetoranController@penyetoranNasabah');
         Route::get('/show-deposit', 'PenyetoranController@showPenyetoranNasabah');
         Route::get('/confirm-deposit/{penyetoran_id}', 'PenyetoranController@confirmDepositAsTransaksi');

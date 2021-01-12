@@ -24,11 +24,11 @@ class UserSeeder extends Seeder
         }
         $password = Hash::make('password');
 
-        $nasabahRole = Role::where('role_name', 'nasabah')->first();
-        $pengurus_1Role = Role::where('role_name', 'pengurus-satu')->first();
-        $pengurus_2Role = Role::where('role_name', 'pengurus-dua')->first();
-        $bendaharaRole = Role::where('role_name', 'bendahara')->first();
-        $adminRole = Role::where('role_name', 'admin')->first();
+        $nasabahRole = Role::where('name', 'nasabah')->first();
+        $pengurus_1Role = Role::where('name', 'pengurus-satu')->first();
+        $pengurus_2Role = Role::where('name', 'pengurus-dua')->first();
+        $bendaharaRole = Role::where('name', 'bendahara')->first();
+        $adminRole = Role::where('name', 'admin')->first();
         
         $nasabah1 = User::create([ 
                 'name' => 'Fauzil',

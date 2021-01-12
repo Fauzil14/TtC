@@ -38,8 +38,8 @@ class NasabahController extends Controller
 
         }
 
-        $role_name = $user->roles()->first()->role_name;
-        $role = [ 'role' => $role_name ];
+        $name = $user->roles()->first()->name;
+        $role = [ 'role' => $name ];
         $user = array_merge($user->toArray(), $role);
         
         try {

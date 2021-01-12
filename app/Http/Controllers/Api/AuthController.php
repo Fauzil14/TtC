@@ -26,8 +26,8 @@ class AuthController extends Controller
         }
 
         $user = $user->firstWhere('email', $request->email);
-        $role_name = $user->roles()->first()->role_name;
-        $role = [ 'role' => $role_name ];
+        $name = $user->roles()->first()->name;
+        $role = [ 'role' => $name ];
         $user = array_merge($user->toArray(), $role);
 
         return response()->json(compact('user', 'token'));
@@ -51,7 +51,7 @@ class AuthController extends Controller
             'password' => Hash::make($request->get('password')),
         ]);
         
-        $nasabahRole = Role::where('role_name', 'nasabah')->first();
+        $nasabahRole = Role::where('name', 'nasabah')->first();
         $user->roles()->attach($nasabahRole);
 
         $token = JWTAuth::fromUser($user);
