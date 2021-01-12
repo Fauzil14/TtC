@@ -8,6 +8,7 @@ use App\Sampah;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
+use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Auth;
 
 class PenjemputanController extends Controller
@@ -23,18 +24,34 @@ class PenjemputanController extends Controller
         }
     }
     
-    public function requestPenjemputan(Request $request, Penjemputan $pj, DetailPenjemputan $d_pj, Sampah $tabel_sampah) 
+    public function requestPenjemputan(Request $request, Penjemputan $pj, DetailPenjemputan $d_pj, Sampah $tabel_sampah, Client $client) 
     {
-        $pengurus1_id = $request->pengurus1_id;
+        // $pengurus1_id = $request->pengurus1_id;
         $lokasi = $request->lokasi;
         $sampahs = $request->sampah;
+
+        $image = base64_encode(file_get_contents($request->image));
+
+        $res = $client->request('POST', 'https://freeimage.host/api/1/upload', [
+            'form_params' => [
+                'key' => '6d207e02198a847aa98d0a2a901485a5',
+                'action' => 'upload',
+                'source' => $image,
+                'format' => 'json'
+            ]
+        ]);
+
+        $image = json_decode($res->getBody()->getContents());
+
+        $image = $image->image->display_url;
 
         $old_pj = $pj->firstOrCreate([
             'tanggal'       => Carbon::now()->toDateString(),
             'nasabah_id'    => Auth::id(),
-            'pengurus1_id'  => $pengurus1_id,
+            // 'pengurus1_id'  => $pengurus1_id,
             'status'        => 'menunggu',
             'lokasi'        => $lokasi,
+            'image'         => $image
         ]);
 
         $data = $old_pj;

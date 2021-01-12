@@ -21,12 +21,10 @@ class PenyetoranController extends Controller
 {
     public function showNasabahRequest(Penjemputan $pj) 
     {
-        $pj = $pj->where('pengurus1_id', Auth::id())
-                 ->where('status', 'menunggu')
-                 ->with('detail_penjemputan')
+        $pj = $pj->where('status', 'menunggu')
+                 ->with(['nasabah', 'detail_penjemputan'])
                  ->get();
         
-
         try {
             return $this->sendResponse('succes', 'Request data has been succesfully get', $pj, 200);
         } catch(\Throwable $e) {
@@ -37,12 +35,14 @@ class PenyetoranController extends Controller
     public function acceptNasabahRequest($pj_id , Penjemputan $pj) 
     {
         $pj = $pj->where('id', $pj_id)
-                 ->where('pengurus1_id', Auth::id())
                  ->where('status', 'menunggu')
+                 ->with('nasabah')
                  ->first();
 
-        if(!empty($pj)) {
-            $pj->update(['status' => 'diterima']);
+        if(!empty($pj)) { 
+            $pj->update(['status' => 'diterima']); 
+        } else {
+            return $this->sendResponse('failed', 'Request data failed to get or has been accepted', null, 400);
         }
 
         try {

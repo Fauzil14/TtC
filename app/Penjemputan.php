@@ -19,7 +19,7 @@ class Penjemputan extends Model
 
 
     public function nasabah() {
-      return $this->hasOne('App\User');
+      return $this->hasOne('App\User', 'id', 'nasabah_id');
     }
 
     public function pengurus_satu() {
