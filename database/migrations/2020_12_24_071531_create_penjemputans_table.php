@@ -14,18 +14,21 @@ class CreatePenjemputansTable extends Migration
      */
     public function up()
     {
-        $tanggal = Carbon::now()->toDateString();
+        $tanggal = Carbon::now()->toDateTimeString();
 
         Schema::create('penjemputans', function (Blueprint $table) use ($tanggal) {
             $table->id();
             $table->date('tanggal')->default($tanggal);
             $table->foreignId('nasabah_id')->constrained('users');
+            $table->unsignedBigInteger('pengurus1_id')->nullable();
             $table->enum('status', ['menunggu', 'diterima', 'ditolak', 'berhasil', 'gagal'])->nullable();
             $table->text('lokasi');
             $table->string('image');
             $table->decimal('total_berat', 8, 2)->nullable();
             $table->decimal('total_harga', 10, 2)->nullable();
             $table->timestamps();
+
+            $table->foreign('pengurus1_id')->references('id')->on('users');
         });
     }
 

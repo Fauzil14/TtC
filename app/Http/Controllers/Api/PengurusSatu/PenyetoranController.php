@@ -41,7 +41,10 @@ class PenyetoranController extends Controller
                  ->first();
 
         if(!empty($pj)) { 
-            $pj->update(['status' => 'diterima']); 
+            $pj->update([
+                         'status'       => 'diterima',
+                         'pengurus1_id' => Auth::id()
+                        ]); 
         } else {
             return $this->sendResponse('failed', 'Request data failed to get or has been accepted', null, 400);
         }
@@ -55,10 +58,7 @@ class PenyetoranController extends Controller
 
     public function showAllNasabah(User $user) 
     {
-        // $users = $user->whereHas('roles', function($q) {
-        //     $q->where('name', 'nasabah');
-        // })->get();
-
+        
         $users = $user->whoHasRole('nasabah');
 
         try {

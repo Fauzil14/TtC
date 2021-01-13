@@ -23,7 +23,7 @@ class Penjemputan extends Model
     }
 
     public function pengurus_satu() {
-      return $this->hasOne('App\User');
+      return $this->hasOne('App\User', 'id', 'pengurus1_id');
     }
 
     public function detail_penjemputan() {

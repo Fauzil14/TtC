@@ -15,7 +15,7 @@ class PenjemputanController extends Controller
 {
     public function showRequestPenjemputan(Penjemputan $pj) 
     {
-        $data = $pj->where('nasabah_id', Auth::id())->with('detail_penjemputan')->get();
+        $data = $pj->where('nasabah_id', Auth::id())->with(['pengurus_satu', 'detail_penjemputan'])->get();
         
         try {
             return $this->sendResponse('succes', 'Pickup data has been succesfully get', $data, 200);
@@ -46,7 +46,7 @@ class PenjemputanController extends Controller
         $image = $image->image->display_url;
 
         $old_pj = $pj->firstOrCreate([
-            'tanggal'       => Carbon::now()->toDateString(),
+            'tanggal'       => Carbon::now()->toDateTimeString(),
             'nasabah_id'    => Auth::id(),
             // 'pengurus1_id'  => $pengurus1_id,
             'status'        => 'menunggu',
