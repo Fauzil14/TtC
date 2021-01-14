@@ -56,11 +56,13 @@ class PenyetoranController extends Controller
         return $this->sendResponse('succes', 'Users data has been succesfully get', $users, 200);
     }
 
-    public function penyetoranNasabah(Request $request, Penyetoran $pt, DetailPenyetoran $d_pt) 
+    public function penyetoranNasabah(Request $request) 
     {
         try {
-        $data = DB::transaction(function() use($request, $pt, $d_pt){
-            $pt = $pt->firstOrCreate([
+
+            DB::beginTransaction();
+
+            $pt = Penyetoran::firstOrCreate([
                 'tanggal'               => Carbon::now()->toDateString(),
                 'nasabah_id'            => $request->nasabah_id,
                 'pengurus1_id'          => Auth::id(),
@@ -88,31 +90,36 @@ class PenyetoranController extends Controller
                                                          ]);
             }
 
-            $pt->update([
-                'total_berat' => $d_pt->where('penyetoran_id', $pt->id)->sum('berat'),
-                'total_debit' => $d_pt->where('penyetoran_id', $pt->id)->sum('debit_nasabah'),
-            ]);
+            $d_pt = DetailPenyetoran::where('penyetoran_id', $pt->id)->get();
+
+            $pt->total_berat = $d_pt->sum('berat');
+            $pt->total_debit = $d_pt->sum('debit_nasabah');
+            $pt->update();
 
             if($request->auto_confirm == true) {
                 $this->confirmDepositAsTransaksi($pt->id, $request->auto_confirm);
             }
 
-            return $pt->firstWhere('id', $pt->id)->load('detail_penyetoran');
-        });
+            DB::commit();
+
+            $data = $pt->firstWhere('id', $pt->id)->load('detail_penyetoran');
 
         
             return $this->sendResponse('succes', 'Request data has been succesfully get', $data, 200);
         } catch(\Throwable $e) {
-            return $this->sendResponse('failed', 'Request data failed to get', null, 500);
+            report($e);
+            DB::rollback();
+            
+            return $this->sendResponse('failed', 'Request data failed to create', null, 500);
         }
     }
 
-    public function showPenyetoranNasabah(Penyetoran $pt)
+    public function showPenyetoranNasabah()
     {
-        $data = $pt->where('pengurus1_id', Auth::id())
-                   ->where('status', 'dalam proses')
-                   ->with('detail_penyetoran')
-                   ->get();
+        $data = Penyetoran::where('pengurus1_id', Auth::id())
+                            ->where('status', 'dalam proses')
+                            ->with('detail_penyetoran')
+                            ->get();
 
         return $this->sendResponse('succes', 'Deposit data has been succesfully get', $data, 200);
     }
