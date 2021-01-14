@@ -15,13 +15,13 @@ class PenjemputanController extends Controller
 {
     public function showRequestPenjemputan(Penjemputan $pj) 
     {
-        $data = $pj->where('nasabah_id', Auth::id())->with(['pengurus_satu', 'detail_penjemputan'])->get();
-        
-        try {
-            return $this->sendResponse('succes', 'Pickup data has been succesfully get', $data, 200);
-        } catch(\Throwable $e) {
-            return $this->sendResponse('failed', 'Pickup data failed to get', null, 500);
-        }
+        $data = $pj->latest()
+                    ->where('nasabah_id', Auth::id())
+                    ->with(['nasabah:id,name,email,no_telephone', 'pengurus_satu:id,name,email,no_telephone,location,profile_picture', 'detail_penjemputan'])
+                    ->get()
+                    ->groupBy('status');
+
+        return $this->sendResponse('succes', 'Pickup data has been succesfully get', $data, 200);
     }
     
     public function requestPenjemputan(Request $request, Penjemputan $pj, DetailPenjemputan $d_pj, Sampah $tabel_sampah, Client $client) 

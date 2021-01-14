@@ -20,17 +20,13 @@ use Illuminate\Support\Facades\Auth;
 
 class PenyetoranController extends Controller
 {
-    public function showNasabahRequest(Penjemputan $pj) 
+    public function showNasabahRequest() 
     {
-        $pj = $pj->where('status', 'menunggu')
-                 ->with(['nasabah', 'detail_penjemputan'])
-                 ->get();
+        $pj = Penjemputan::where('status', 'menunggu')
+                            ->with(['nasabah', 'detail_penjemputan'])
+                            ->get();
         
-        try {
-            return $this->sendResponse('succes', 'Request data has been succesfully get', $pj, 200);
-        } catch(\Throwable $e) {
-            return $this->sendResponse('failed', 'Request data failed to get', null, 500);
-        }
+        return $this->sendResponse('succes', 'Request data has been succesfully get', $pj, 200);
     }
     
     public function acceptNasabahRequest($pj_id , Penjemputan $pj) 
@@ -49,11 +45,7 @@ class PenyetoranController extends Controller
             return $this->sendResponse('failed', 'Request data failed to get or has been accepted', null, 400);
         }
 
-        try {
-            return $this->sendResponse('succes', 'Request data has been succesfully get', $pj, 200);
-        } catch(\Throwable $e) {
-            return $this->sendResponse('failed', 'Request data failed to get', null, 500);
-        }
+        return $this->sendResponse('succes', 'Request data has been succesfully get', $pj, 200);
     }
 
     public function showAllNasabah(User $user) 
@@ -61,16 +53,12 @@ class PenyetoranController extends Controller
         
         $users = $user->whoHasRole('nasabah');
 
-        try {
-            return $this->sendResponse('succes', 'Users data has been succesfully get', $users, 200);
-        } catch(\Throwable $e) {
-            return $this->sendResponse('failed', 'Users data failed to get', null, 500);
-        }
+        return $this->sendResponse('succes', 'Users data has been succesfully get', $users, 200);
     }
 
     public function penyetoranNasabah(Request $request, Penyetoran $pt, DetailPenyetoran $d_pt) 
     {
-
+        try {
         $data = DB::transaction(function() use($request, $pt, $d_pt){
             $pt = $pt->firstOrCreate([
                 'tanggal'               => Carbon::now()->toDateString(),
@@ -112,7 +100,7 @@ class PenyetoranController extends Controller
             return $pt->firstWhere('id', $pt->id)->load('detail_penyetoran');
         });
 
-        try {
+        
             return $this->sendResponse('succes', 'Request data has been succesfully get', $data, 200);
         } catch(\Throwable $e) {
             return $this->sendResponse('failed', 'Request data failed to get', null, 500);
@@ -126,11 +114,7 @@ class PenyetoranController extends Controller
                    ->with('detail_penyetoran')
                    ->get();
 
-        try {
-            return $this->sendResponse('succes', 'Deposit data has been succesfully get', $data, 200);
-        } catch(\Throwable $e) {
-            return $this->sendResponse('failed', 'Deposit data failed to get', null, 500);
-        }
+        return $this->sendResponse('succes', 'Deposit data has been succesfully get', $data, 200);
     }
 
     public function confirmDepositAsTransaksi($penyetoran_id, $auto_confirm = false) 
