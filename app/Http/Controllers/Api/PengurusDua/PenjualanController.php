@@ -18,7 +18,7 @@ class PenjualanController extends Controller
 {
     public function showPengepul()
     {
-        $data = Pengepul::all();
+        $data = Pengepul::get();
 
         try {
             return $this->sendResponse('succes', 'Request data has been succesfully get', $data, 200);

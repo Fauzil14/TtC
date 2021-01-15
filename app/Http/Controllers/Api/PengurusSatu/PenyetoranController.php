@@ -28,30 +28,40 @@ class PenyetoranController extends Controller
         
         return $this->sendResponse('succes', 'Request data has been succesfully get', $pj, 200);
     }
+
+    public function showAcceptedRequest()
+    {
+        $pj = Penjemputan::where('status', 'diterima')
+                            ->where('pengurus1_id', Auth::id())
+                            ->with(['nasabah', 'detail_penjemputan'])
+                            ->get();
+        
+        return $this->sendResponse('succes', 'Request data has been succesfully get', $pj, 200);
+    }
     
     public function acceptNasabahRequest($pj_id , Penjemputan $pj) 
     {
-        $pj = $pj->where('id', $pj_id)
-                 ->where('status', 'menunggu')
-                 ->with('nasabah')
-                 ->first();
+        $pj = Penjemputan::firstOrFail('id', $pj_id)
+                            ->where('status', 'menunggu')
+                            ->update([
+                                        'status'       => 'diterima',
+                                        'pengurus1_id' => Auth::id()
+                                     ]);
 
-        if(!empty($pj)) { 
-            $pj->update([
-                         'status'       => 'diterima',
-                         'pengurus1_id' => Auth::id()
-                        ]); 
-        } else {
-            return $this->sendResponse('failed', 'Request data failed to get or has been accepted', null, 400);
-        }
+        return $this->sendResponse('succes', 'Request data has been succesfully get', $pj->load('nasabah'), 200);
+    }
 
-        return $this->sendResponse('succes', 'Request data has been succesfully get', $pj, 200);
+    public function declineNasabahRequest($pj_id)
+    {
+        $pj = Penjemputan::findOrFail($pj_id)->update([ 'status' => 'ditolak' ]);
+
+        return $this->sendResponse('succes', 'Request data succesfully decline', $pj, 200);
     }
 
     public function showAllNasabah(User $user) 
     {
         
-        $users = $user->whoHasRole('nasabah');
+        $users = $user->whoHasRole('nasabah')->get();
 
         return $this->sendResponse('succes', 'Users data has been succesfully get', $users, 200);
     }
