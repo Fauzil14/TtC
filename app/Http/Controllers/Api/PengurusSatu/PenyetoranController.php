@@ -39,16 +39,19 @@ class PenyetoranController extends Controller
         return $this->sendResponse('succes', 'Request data has been succesfully get', $pj, 200);
     }
     
-    public function acceptNasabahRequest($pj_id , Penjemputan $pj) 
+    public function acceptNasabahRequest($pj_id) 
     {
-        $pj = Penjemputan::firstOrFail('id', $pj_id)
-                            ->where('status', 'menunggu')
-                            ->update([
-                                        'status'       => 'diterima',
-                                        'pengurus1_id' => Auth::id()
-                                     ]);
+        $pj = Penjemputan::where('status', 'menunggu')
+                            ->findOrFail($pj_id);
+        
+        $data = $pj->load('nasabah');
+        
+        $pj->update([
+                      'status'       => 'diterima',
+                      'pengurus1_id' => Auth::id()
+                    ]);
 
-        return $this->sendResponse('succes', 'Request data has been succesfully get', $pj->load('nasabah'), 200);
+        return $this->sendResponse('succes', 'Request data has been succesfully get', $data, 200);
     }
 
     public function declineNasabahRequest($pj_id)
@@ -58,10 +61,22 @@ class PenyetoranController extends Controller
         return $this->sendResponse('succes', 'Request data succesfully decline', $pj, 200);
     }
 
-    public function showAllNasabah(User $user) 
+    public function searchNasabah($keyword = null) 
     {
-        
-        $users = $user->whoHasRole('nasabah')->get();
+        $user = new User;
+
+        $users = $user->when(!empty($keyword), function($q) use ($keyword) {
+                                   $q->whereHas('roles', function($q) {
+                                            $q->where('name', 'nasabah');
+                                        })
+                                        ->where( function($q) use ($keyword) {
+                                            return $q->where('name', 'like', "%{$keyword}%")
+                                                     ->orWhere('email', "{$keyword}")
+                                                     ->orWhere('no_telephone', "{$keyword}");
+                                        });
+                        }, function() use ($user) {
+                            return $user->whoHasRole('nasabah');
+                        })->get();
 
         return $this->sendResponse('succes', 'Users data has been succesfully get', $users, 200);
     }
