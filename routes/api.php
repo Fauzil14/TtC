@@ -28,6 +28,12 @@ Route::prefix('profile')->namespace('Api')->middleware(['jwt.verify', 'can:profi
     Route::put('/update', 'ProfileController@updateProfileNasabah');
 });
 
+Route::prefix('message')->namespace('Api')->middleware(['jwt.verify'])->group(function() {
+    Route::get('/make-room/{user_id}', 'MessageController@makeRoom');
+    Route::get('/show-contact', 'MessageController@showContact');
+    Route::get('/get-message/{room_id}', 'MessageController@getMessage');
+});
+
 
 Route::prefix('nasabah')->namespace('Api\Nasabah')->middleware(['jwt.verify', 'can:nasabah'])->group(function() {
     Route::get('home', 'HomeNasabahController@index');

@@ -62,7 +62,7 @@ class User extends Authenticatable implements MustVerifyEmail, JWTSubject
     }
 
     public function whoHasRole($role) {
-        return self::whereHas('roles', function($q) use ($role) {
+        return self::whereHas('roles', function($q) use ($role) { // whereHas didn't return null data
             $q->where('name', $role);
         });
     }
