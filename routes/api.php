@@ -32,6 +32,7 @@ Route::prefix('message')->namespace('Api')->middleware(['jwt.verify'])->group(fu
     Route::get('/make-room/{user_id}', 'MessageController@makeRoom');
     Route::get('/show-contact', 'MessageController@showContact');
     Route::get('/get-message/{room_id}', 'MessageController@getMessage');
+    Route::post('/send-message/{room_id}', 'MessageController@sendPrivateMessage');
 });
 
 

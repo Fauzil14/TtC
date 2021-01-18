@@ -2,15 +2,17 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Message;
-use App\Participant;
 use App\Room;
 use App\User;
+use App\Message;
+use Carbon\Carbon;
+use App\Participant;
 use Illuminate\Http\Request;
+use App\Events\PrivateMessage;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\RoomResource;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use App\Http\Resources\MessageResource;
 
 class MessageController extends Controller
@@ -23,32 +25,36 @@ class MessageController extends Controller
 
     public function makeRoom($user_id)
     {
-        $auth_id = Auth::id();
         $user = User::findOrFail($user_id);
 
-        // $participant = Participant::firstWhere(['user_id' => Auth::id(), 'user_id' => $user_id]);
-
-        // $room = Room::firstOrCreate([ 'id' => empty($participant->room_id) ? null : $participant->room_id ],
-        //                             [ 'name' => auth()->user()->name . ' - ' . $user->name ]);
-        
-        $inputs = [
-                    [ 'user_id' => Auth::id() ],
-                    [ 'user_id' => $user_id ]
-                 ];
-        
-        $prt = Participant::select('room_id')
+        $rooms = Participant::select('room_id')
                             ->where('user_id', Auth::id())
+                            ->orWhere('user_id', $user_id)
                             ->distinct()
-                            ->get();
+                            ->get()->toArray();
+        
+        foreach($rooms as $key => $value) {
+            $matchs = Participant::where('room_id', $rooms[$key]['room_id'])
+                                    ->where('user_id', $user_id)
+                                    ->first();
+            $matchs !== null ? $match = $matchs : $match = null;
+        }
 
-        return response()->json($prt);
+        $room = Room::firstOrCreate([ 'id'   => empty($match) ? null : $match->room_id ],
+                                    [ 'name' => auth()->user()->name . ' - ' . $user->name ]);
 
+        if(empty($matchs)) {
+            $participants = [ Auth::id(), $user_id ];
+                
+            foreach($participants as $participant) { 
+                $room->participant()->firstOrCreate([
+                    'user_id' => $participant,
+                    'room_id' => $room->id,
+                ]);
+            }
+        }
 
-
-        // foreach($inputs as $input) {
-        //     $room->participant()->firstOrCreate($input);
-        // }
-        // return response()->json($room->load('participant'));
+        $this->getMessage($room->id);
     }
 
     public function showContact()
@@ -76,8 +82,19 @@ class MessageController extends Controller
         return response()->json(MessageResource::collection($messages));
     }
 
-    public function sendMessage()
+    public function sendPrivateMessage(Request $request, $room_id)
     {
 
+        $user = User::findOrFail(Auth::id());
+
+        $message = $user->messages()->create([
+            'room_id' => $room_id,
+            'from_id' => $user->id,
+            'message' => $request->message,
+        ]);
+
+        broadcast(new PrivateMessage($message->load('from')))->toOthers();
+
+        return response()->json($message->load('from'));
     }
 }
