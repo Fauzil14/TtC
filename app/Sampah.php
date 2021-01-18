@@ -7,12 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 class Sampah extends Model
 {
     protected $fillable = [
-                                    'golongan_sampah_id',
-                                    'jenis_sampah',
-                                    'contoh',
-                                    'harga_perkilogram',
-                                    'harga_jual_perkilogram',
-                                ];
+                            'golongan_sampah_id',
+                            'jenis_sampah',
+                            'contoh',
+                            'harga_perkilogram',
+                            'harga_jual_perkilogram',
+                          ];
     
     protected static function boot() {
         parent::boot();
@@ -23,7 +23,11 @@ class Sampah extends Model
     }
     
     public function gudang() {
-        return $this->hasOne('App\Gudang');
+        return $this->hasOne('App\Gudang', 'sampah_id', 'id');
+    }
+
+    public function golonganSampah() {
+        return $this->hasOne('App\GolonganSampah', 'id', 'golongan_sampah_id');
     }
 
     public function detail_penyetoran() {

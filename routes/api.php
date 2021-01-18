@@ -20,7 +20,7 @@ Route::group([ 'prefix' => 'auth' ], function($router) {
     Route::post('login', 'Api\AuthController@login');
 });
 
-// Route::get('/home', 'Api\Nasabah\HomeNasabahController@index')->middleware('jwt.verify', 'can:nasabah');
+Route::get('/sampah', 'Api\SampahController@getSampah')->middleware('jwt.verify');
    
 // profile
 Route::prefix('profile')->namespace('Api')->middleware(['jwt.verify', 'can:profile'])->group(function() {

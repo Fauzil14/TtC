@@ -12,6 +12,6 @@ class Gudang extends Model
                           ];
 
     public function sampah() {
-        return $this->hasOne('App\Sampah');
+        return $this->hasOne('App\Sampah', 'id', 'sampah_id');
     }
 }

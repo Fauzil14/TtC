@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\RoomResource;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use App\Http\Resources\MessageResource;
 
 class MessageController extends Controller
@@ -22,22 +23,32 @@ class MessageController extends Controller
 
     public function makeRoom($user_id)
     {
+        $auth_id = Auth::id();
         $user = User::findOrFail($user_id);
 
-        $participant = Participant::firstWhere(['user_id' => Auth::id(), 'user_id' => $user_id]);
+        // $participant = Participant::firstWhere(['user_id' => Auth::id(), 'user_id' => $user_id]);
 
-        $room = Room::firstOrCreate([ 'id' => empty($participant->room_id) ? null : $participant->room_id ],
-                                    [ 'name' => auth()->user()->name . ' - ' . $user->name ]);
+        // $room = Room::firstOrCreate([ 'id' => empty($participant->room_id) ? null : $participant->room_id ],
+        //                             [ 'name' => auth()->user()->name . ' - ' . $user->name ]);
         
         $inputs = [
-                    [ 'user_id' => Auth::id(), 'room_id' => $room->id ],
-                    [ 'user_id' => $user_id, 'room_id' => $room->id ]
+                    [ 'user_id' => Auth::id() ],
+                    [ 'user_id' => $user_id ]
                  ];
+        
+        $prt = Participant::select('room_id')
+                            ->where('user_id', Auth::id())
+                            ->distinct()
+                            ->get();
 
-        foreach($inputs as $input) {
-            $room->participant()->firstOrCreate($input);
-        }
-        return response()->json($room->load('participant'));
+        return response()->json($prt);
+
+
+
+        // foreach($inputs as $input) {
+        //     $room->participant()->firstOrCreate($input);
+        // }
+        // return response()->json($room->load('participant'));
     }
 
     public function showContact()

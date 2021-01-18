@@ -156,5 +156,76 @@ class SampahSeeder extends Seeder
              'harga_jual_perkilogram' => $harga_perkilogram[19] + ($harga_perkilogram[19] * 0.15),
             ],            
         ]);
+
+        
+        // BESI
+        $besis = [
+            [ 'BESI TEBAL' ,2500], 
+            [ 'BESI TIPIS' ,2000], 
+            [ 'BESI SENG, KALENG SUSU' ,700], 
+            [ 'KUNINGAN' ,30000], 
+            [ 'TEMBAGA' ,60000], 
+            [ 'ALUMINIUM TEBAL' ,15000], 
+            [ 'ALUMINIUM TIPIS' ,12000], 
+            [ 'ALUMINIUM SIKU' ,12000],
+            [ 'PERUNNGU' ,7000]
+        ];
+
+        foreach($besis as $key => $value) {
+            $besi_seed [] = [ 
+                            'golongan_sampah_id' => 2,
+                            'jenis_sampah' => $besis[$key][0],
+                            'contoh' => null,
+                            'harga_perkilogram' => $besis[$key][1],
+                            'harga_jual_perkilogram' => $besis[$key][1] + ($besis[$key][1] * 0.15)
+                            ];
+        }
+
+        DB::table('sampahs')->insert($besi_seed);
+
+        
+        // KERTAS
+        $kertass = [
+            [ 'KERTAS PUTIH' ,1300], 
+            [ 'KERTAS CAMPUR' ,500], 
+            [ 'KERTAS BURAM' ,1200], 
+            [ 'KARDUS (DOS)' ,1300], 
+            [ 'KERTAS SEMEN' ,1000], 
+            [ 'KORAN' ,1000], 
+            [ 'KARTON RAK TELOR' ,900], 
+        ];
+
+        foreach($kertass as $key => $value) {
+            $kertas_seed [] = [ 
+                            'golongan_sampah_id' => 3,
+                            'jenis_sampah' => $kertass[$key][0],
+                            'contoh' => null,
+                            'harga_perkilogram' => $kertass[$key][1],
+                            'harga_jual_perkilogram' => $kertass[$key][1] + ($kertass[$key][1] * 0.15)
+                            ];
+        }
+
+        DB::table('sampahs')->insert($kertas_seed);
+
+
+        // KACA
+        $kacas = [
+            [ 'BOTOL MARKISABENSIN' ,500], 
+            [ 'BOTOL KECAP' ,500], 
+            [ 'BOTOL MARJAN' ,500], 
+            [ 'BOTOL ANGGUR' ,1000], 
+        ];
+
+        foreach($kacas as $key => $value) {
+            $kaca_seed [] = [ 
+                            'golongan_sampah_id' => 4,
+                            'jenis_sampah' => $kacas[$key][0],
+                            'contoh' => null,
+                            'harga_perkilogram' => $kacas[$key][1],
+                            'harga_jual_perkilogram' => $kacas[$key][1] + ($kacas[$key][1] * 0.15)
+                            ];
+        }
+
+        DB::table('sampahs')->insert($kaca_seed);
     }
 }
