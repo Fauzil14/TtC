@@ -64,13 +64,15 @@ class PenyetoranController extends Controller
     public function searchNasabah($keyword = null) 
     {
         $user = new User;
-
-        $users = $user->when(!empty($keyword), function($q) use ($keyword) {
+        // $keyword = $request->keyword;
+        $lkey = strtolower($keyword);
+        
+        $users = $user->when(!empty($keyword), function($q) use ($keyword,$lkey) {
                                    $q->whereHas('roles', function($q) {
                                             $q->where('name', 'nasabah');
                                         })
-                                        ->where( function($q) use ($keyword) {
-                                            return $q->where('name', 'like', "%{$keyword}%")
+                                        ->where( function($q) use ($keyword,$lkey) {
+                                            return $q->whereRaw('lower(name) like (?)',["%{$lkey}%"])
                                                      ->orWhere('email', "{$keyword}")
                                                      ->orWhere('no_telephone', "{$keyword}");
                                         });
