@@ -77,9 +77,18 @@ class MessageController extends Controller
         })->update(['status' => 2]);
         $message->refresh();
 
-        $messages = $message->where('room_id', $room_id)->with('from:id,name')->get();
+        // $messages = $message
+        //                     ->where('room_id', $room_id)
+        //                     ->select(DB::raw('COUNT(`from`) AS unread WHERE status = 1'))
+        //                     ->get();
+        $messages = DB::table('messages')
+                            ->select(DB::raw('COUNT(`from_id`)AS unread WHERE status = 1 '))
+                            ->where('room_id', $room_id)
+                            ->get();
 
-        return response()->json(MessageResource::collection($messages));
+        return response()->json($messages);
+
+        // return response()->json(MessageResource::collection($messages));
     }
 
     public function sendPrivateMessage(Request $request, $room_id)
@@ -95,6 +104,8 @@ class MessageController extends Controller
 
         broadcast(new PrivateMessage($message->load('from')))->toOthers();
 
-        return response()->json($message->load('from'));
+        $message = new MessageResource($message->load('from'));
+
+        return $this->sendResponse('succes', 'Message sent successfully', $message, 200);
     }
 }

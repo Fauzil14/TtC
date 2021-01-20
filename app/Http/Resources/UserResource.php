@@ -20,6 +20,7 @@ class UserResource extends JsonResource
             'email' => $this->email,
             'no_telephone' => $this->no_telephone,
             'profile_picture' => $this->profile_picture,
+            'penjemputan' => $this->whenLoaded('penjemputan')->where('status', 'diterima'),
         ];
     }
 }

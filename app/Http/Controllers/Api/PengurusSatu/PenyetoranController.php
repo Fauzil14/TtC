@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Api\PengurusSatu;
 
 use App\Bank;
+use App\User;
 use App\Gudang;
 use App\Sampah;
 use App\Transaksi;
-use App\User;
 use Carbon\Carbon;
 use App\Penyetoran;
 use App\Penjemputan;
@@ -16,6 +16,7 @@ use App\DetailPenyetoran;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Auth;
 
 class PenyetoranController extends Controller
@@ -64,7 +65,6 @@ class PenyetoranController extends Controller
     public function searchNasabah($keyword = null) 
     {
         $user = new User;
-        // $keyword = $request->keyword;
         $lkey = strtolower($keyword);
         
         $users = $user->when(!empty($keyword), function($q) use ($keyword,$lkey) {
@@ -78,7 +78,9 @@ class PenyetoranController extends Controller
                                         });
                         }, function() use ($user) {
                             return $user->whoHasRole('nasabah');
-                        })->get();
+                        })->with('penjemputan')
+                        ->get();
+        $users = UserResource::collection($users);
 
         return $this->sendResponse('succes', 'Users data has been succesfully get', $users, 200);
     }

@@ -46,9 +46,8 @@ class PenjemputanController extends Controller
         $image = $image->image->display_url;
 
         $old_pj = $pj->firstOrCreate([
-            'tanggal'       => Carbon::now()->toDateTimeString(),
+            'tanggal'       => Carbon::now()->toDateString(),
             'nasabah_id'    => Auth::id(),
-            // 'pengurus1_id'  => $pengurus1_id,
             'status'        => 'menunggu',
             'lokasi'        => $lokasi,
             'image'         => $image
