@@ -16,7 +16,7 @@ class MessageResource extends JsonResource
     {
         return [
             'id'            => $this->id,
-            'from_user'     => $this->whenLoaded('from')->only('id', 'name'),
+            'from_user'     => new UserResource($this->whenLoaded('from')),
             'message'       => $this->message,
             'deleted_at,'   => $this->deleted_at,        
             'created_at,'   => $this->created_at,

@@ -17,4 +17,8 @@ class Participant extends Model
         return $this->hasOne('App\User', 'id', 'user_id');
     }
 
+    public function messages() {
+        return $this->hasMany('App\Message', 'from_id', 'user_id');
+    }
+
 }

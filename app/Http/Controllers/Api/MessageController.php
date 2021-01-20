@@ -77,18 +77,9 @@ class MessageController extends Controller
         })->update(['status' => 2]);
         $message->refresh();
 
-        // $messages = $message
-        //                     ->where('room_id', $room_id)
-        //                     ->select(DB::raw('COUNT(`from`) AS unread WHERE status = 1'))
-        //                     ->get();
-        $messages = DB::table('messages')
-                            ->select(DB::raw('COUNT(`from_id`)AS unread WHERE status = 1 '))
-                            ->where('room_id', $room_id)
-                            ->get();
+        $messages = $message->where('room_id', $room_id)->get();
 
-        return response()->json($messages);
-
-        // return response()->json(MessageResource::collection($messages));
+        return response()->json(MessageResource::collection($messages));
     }
 
     public function sendPrivateMessage(Request $request, $room_id)

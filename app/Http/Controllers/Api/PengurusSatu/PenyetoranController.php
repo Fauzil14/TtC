@@ -78,8 +78,11 @@ class PenyetoranController extends Controller
                                         });
                         }, function() use ($user) {
                             return $user->whoHasRole('nasabah');
-                        })->with('penjemputan')
+                        })->with(['penjemputan' => function($query) {
+                            $query->where('status', 'diterima');
+                        }])
                         ->get();
+                        
         $users = UserResource::collection($users);
 
         return $this->sendResponse('succes', 'Users data has been succesfully get', $users, 200);
