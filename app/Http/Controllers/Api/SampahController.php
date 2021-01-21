@@ -12,7 +12,7 @@ class SampahController extends Controller
     
     public function getSampah()
     {
-        $sampah = SampahResource::collection(Sampah::get())->groupBy('golongan_sampah_id');
+        $sampah = SampahResource::collection(Sampah::get());
 
         return $this->sendResponse('succes', 'Samapah data has been succesfully get', $sampah, 200);
     }

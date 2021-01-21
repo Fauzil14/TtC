@@ -15,4 +15,8 @@ class Message extends Model
     public function from() {
         return $this->hasOne('App\User', 'id', 'from_id');
     }
+
+    public function deletedMessage() {
+        return $this->hasOne('App\DeletedMessage');
+    }
 }

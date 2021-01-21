@@ -15,7 +15,7 @@ class CreateDeletedMessagesTable extends Migration
     {
         Schema::create('deleted_messages', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('message_id');
+            $table->foreignId('message_id')->constrined('messages');
             $table->string('deleted_message');
             $table->timestamps();
         });

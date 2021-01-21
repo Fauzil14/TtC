@@ -7,6 +7,7 @@ use App\User;
 use App\Message;
 use Carbon\Carbon;
 use App\Participant;
+use App\DeletedMessage;
 use Illuminate\Http\Request;
 use App\Events\PrivateMessage;
 use Illuminate\Support\Facades\DB;
@@ -104,7 +105,19 @@ class MessageController extends Controller
     {
         $message = Message::findOrFail($message_id);
 
-        
+        $deleted_message = new DeletedMessage;
+
+        $message->deletedMessage()->create([
+                                            'message_id'      => $message->id,
+                                            'deleted_message' => $message->deleted_message,
+                                           ]);
+        if($message->status === 1) {
+            $message->message = "Pesan ini telah di hapus oleh " . Auth::user()->name;
+            $message->update();
+        } 
+        if($message->status === 2) {
+            $message->message = "Pesan ini"
+        }
 
         return response()->json($message);
     }
