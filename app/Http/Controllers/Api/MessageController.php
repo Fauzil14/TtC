@@ -99,4 +99,13 @@ class MessageController extends Controller
 
         return $this->sendResponse('succes', 'Message sent successfully', $message, 200);
     }
+
+    public function deleteMessage($message_id) 
+    {
+        $message = Message::findOrFail($message_id);
+
+        
+
+        return response()->json($message);
+    }
 }
