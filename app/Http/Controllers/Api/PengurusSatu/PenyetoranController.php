@@ -94,17 +94,26 @@ class PenyetoranController extends Controller
     public function penyetoranNasabah(Request $request) 
     {
 
+        // $nasabah = DB::table('users')->join('role_user', 'users.id', '=', 'role_user.user_id')
+        //                     ->join('roles', 'role_user.role_id', '=', 'roles.id')
+        //                     ->where('roles.name', 'nasabah')->get();
+        
+        // dd($nasabah);
+
         $request->validate([
             'auto_confirm'          => ['sometimes'],
-            'nasabah_id'            => ['required', 'exists:App\User,id'],
+            'nasabah_id'            => [
+                                        'required', 
+                                        'user_role:role,nasabah'
+                                       ],
             'keterangan_penyetoran' => ['required', Rule::in(['dijemput', 'diantar'])],
             'penjemputan_id'        => [
                                         'required_if:keterangan_penyetoran,dijemput', 
-                                        // Rule::exists('penjemputans,id')->where(function($query) use ($request,$auth_id) {
-                                        //     $query->where('nasabah_id', $request->nasabah_id)
-                                        //             ->where('pengurus1_id', $auth_id)
-                                        //             ->where('status', 'diterima');
-                                        Rule::exists('App\Penjemputan,id'),
+                                        Rule::exists('penjemputans', 'id')->where(function($query) use ($request) {
+                                            $query->where('nasabah_id', $request->nasabah_id)
+                                                    ->where('pengurus1_id', Auth::id())
+                                                    ->where('status', 'diterima');
+                                        }),
                                        ],
             'lokasi'                => ['required'],
             'sampah'                => ['required'],
