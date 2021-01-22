@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class PenjemputanController extends Controller
 {
@@ -26,7 +27,11 @@ class PenjemputanController extends Controller
     
     public function requestPenjemputan(Request $request, Penjemputan $pj, DetailPenjemputan $d_pj, Sampah $tabel_sampah, Client $client) 
     {
-        // $pengurus1_id = $request->pengurus1_id;
+        $request->validate([
+            'lokasi' => 'required',
+            'image'  => 'required|image'
+        ]);
+
         $lokasi = $request->lokasi;
         $sampahs = $request->sampah;
 

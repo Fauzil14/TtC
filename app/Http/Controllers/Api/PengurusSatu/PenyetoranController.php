@@ -14,10 +14,12 @@ use App\TabunganUser;
 use App\TransaksiBank;
 use App\DetailPenyetoran;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class PenyetoranController extends Controller
 {
@@ -91,6 +93,25 @@ class PenyetoranController extends Controller
 
     public function penyetoranNasabah(Request $request) 
     {
+
+        $request->validate([
+            'auto_confirm'          => ['sometimes'],
+            'nasabah_id'            => ['required', 'exists:App\User,id'],
+            'keterangan_penyetoran' => ['required', Rule::in(['dijemput', 'diantar'])],
+            'penjemputan_id'        => [
+                                        'required_if:keterangan_penyetoran,dijemput', 
+                                        // Rule::exists('penjemputans,id')->where(function($query) use ($request,$auth_id) {
+                                        //     $query->where('nasabah_id', $request->nasabah_id)
+                                        //             ->where('pengurus1_id', $auth_id)
+                                        //             ->where('status', 'diterima');
+                                        Rule::exists('App\Penjemputan,id'),
+                                       ],
+            'lokasi'                => ['required'],
+            'sampah'                => ['required'],
+            'sampah.*.sampah_id'    => ['required_with:sampah.*.berat', 'exists:App\Sampah,id', 'distinct'],
+            'sampah.*.berat'        => ['required_with:sampah.*.sampah_id'],
+        ]);
+
         try {
 
             DB::beginTransaction();
@@ -129,7 +150,7 @@ class PenyetoranController extends Controller
             $pt->total_debit = $d_pt->sum('debit_nasabah');
             $pt->update();
 
-            if($request->auto_confirm == true) {
+            if( (bool) $request->auto_confirm == true) {
                 $this->confirmDepositAsTransaksi($pt->id, $request->auto_confirm);
             }
 

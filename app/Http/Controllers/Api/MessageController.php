@@ -103,9 +103,9 @@ class MessageController extends Controller
 
     public function deleteMessage($message_id) 
     {
-        $message = Message::findOrFail($message_id);
-
-        $deleted_message = new DeletedMessage;
+        $message = Message::where(function($query) {
+            $query->where('status', 1)->orWhere('status', 2);
+        })->findOrFail($message_id);
 
         $message->deletedMessage()->create([
                                             'message_id'      => $message->id,
@@ -113,12 +113,23 @@ class MessageController extends Controller
                                            ]);
         if($message->status === 1) {
             $message->message = "Pesan ini telah di hapus oleh " . Auth::user()->name;
-            $message->update();
-        } 
-        if($message->status === 2) {
-            $message->message = "Pesan ini"
+            $message->status = 3;
+        } else {
+            $message->status = 4;
         }
+        $message->update();
 
-        return response()->json($message);
+        return $this->sendResponse('succes', 'Message deleted successfully', $message, 200);
+    }
+
+    public function updateMessage(Request $request) 
+    {
+        $message = Message::where(function($query) {
+                                $query->where('status', 1)->orWhere('status', 2);
+                            })->findOrFail($request->message_id);
+
+        $message->update(['message' => $request->message]);
+
+        return $this->sendResponse('succes', 'Message updated successfully', $message, 200);
     }
 }
