@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Message extends Model
 {
-    protected $fillable = ['room_id', 'from_id' , 'message', 'status'];
+    protected $fillable = ['room_id', 'from_id' , 'message', 'status', 'deleted_at'];
 
     public function room() {
         return $this->hasOne('App\Room');

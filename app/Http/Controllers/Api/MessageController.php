@@ -72,9 +72,10 @@ class MessageController extends Controller
     public function getMessage($room_id)
     {
         $message = new Message;
-        $message->where(function($query) use ($room_id) {
+        $m = $message->where(function($query) use ($room_id) {
             $query->where('room_id', $room_id)
-                    ->where('from_id', '!=', Auth::id());
+                  ->where('from_id', '!=', Auth::id())
+                  ->where('status', 1);
         })->update(['status' => 2]);
         $message->refresh();
 
@@ -109,14 +110,15 @@ class MessageController extends Controller
 
         $message->deletedMessage()->create([
                                             'message_id'      => $message->id,
-                                            'deleted_message' => $message->deleted_message,
+                                            'deleted_message' => $message->message,
                                            ]);
-        if($message->status === 1) {
+        if($message->status == 1) {
             $message->message = "Pesan ini telah di hapus oleh " . Auth::user()->name;
             $message->status = 3;
         } else {
             $message->status = 4;
         }
+        $message->deleted_at = now();
         $message->update();
 
         return $this->sendResponse('succes', 'Message deleted successfully', $message, 200);

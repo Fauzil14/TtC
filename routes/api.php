@@ -33,7 +33,7 @@ Route::prefix('message')->namespace('Api')->middleware(['jwt.verify'])->group(fu
     Route::get('/show-contact', 'MessageController@showContact');
     Route::get('/get-message/{room_id}', 'MessageController@getMessage');
     Route::post('/send-message/{room_id}', 'MessageController@sendPrivateMessage');
-    Route::delete('/delete-message/{room_id}', 'MessageController@deleteMessage');
+    Route::delete('/delete-message/{message_id}', 'MessageController@deleteMessage');
 });
 
 

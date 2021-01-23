@@ -94,12 +94,6 @@ class PenyetoranController extends Controller
     public function penyetoranNasabah(Request $request) 
     {
 
-        // $nasabah = DB::table('users')->join('role_user', 'users.id', '=', 'role_user.user_id')
-        //                     ->join('roles', 'role_user.role_id', '=', 'roles.id')
-        //                     ->where('roles.name', 'nasabah')->get();
-        
-        // dd($nasabah);
-
         $request->validate([
             'auto_confirm'          => ['sometimes'],
             'nasabah_id'            => [
@@ -159,7 +153,7 @@ class PenyetoranController extends Controller
             $pt->total_debit = $d_pt->sum('debit_nasabah');
             $pt->update();
 
-            if( (bool) $request->auto_confirm == true) {
+            if( (bool) $request->auto_confirm == true ) {
                 $this->confirmDepositAsTransaksi($pt->id, $request->auto_confirm);
             }
 
