@@ -9,6 +9,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class MessageResource extends JsonResource
 {
+    
     /**
      * Transform the resource into an array.
      *
@@ -23,21 +24,34 @@ class MessageResource extends JsonResource
         //   3 => 'deleted_for_auth_user_only'
         //   4 => 'deleted_for_all', 
         
-        if( $this->from_id == Auth::id() && $this->status == 3 ) {
-            return null;
-        }
-
-        $action = Route::currentRouteAction();
+            switch ($this->status) {
+                case $this->status == 1 : 
+                    $is_message = 'unread';
+                    break;
+                case $this->status == 2 : 
+                    $is_message = 'read';
+                    break;
+                case $this->status == 3 : 
+                    $is_message = 'deleted_for_auth_user_olny';
+                    break;
+                case $this->status == 4 :
+                    $is_message = 'deleted_for_all';
+                    break;
+            }
 
         return [
             'id'            => $this->id,
-            'is_auth_user'  => $this->when($action == "App\Http\Controllers\Api\MessageController@getMessage", 
-                                            $this->when($this->from_id == Auth::id(), TRUE, FALSE)),
-            'from_user'     => new UserResource($this->whenLoaded('from')),
+            'status'        => $this->status,
+            'from'          => $this->from->only('id', 'name', 'profile_picture'),
             'message'       => $this->message,
-            'deleted_at,'   => $this->deleted_at,        
-            'created_at,'   => $this->created_at,
-            'updated_at,'   => $this->updated_at        
+            // $this->mergeWhen($currentRoute == "App\Http\Controllers\Api\MessageController@getMessage", [
+                'is_auth_user'  => $this->when($this->from_id == Auth::id(), TRUE, FALSE),
+                'is_message'    => $is_message,
+                'created_at_date' => $this->when($this->created_at->isToday(), 'Hari Ini', 
+                                                    $this->created_at->isYesterday() ? 'Kemarin' 
+                                                                                     : $this->created_at->translatedFormat('j F Y')),
+                'created_at_time' => $this->created_at->translatedFormat('H:i'),
+            // ]),
         ];
     }
 }

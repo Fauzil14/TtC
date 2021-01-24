@@ -25,23 +25,26 @@ class MessageController extends Controller
         //   4 => 'deleted_for_all', 
 
     public function makeRoom($user_id)
-    {
-        $user = User::findOrFail($user_id);
-
-        $rooms = Participant::select('room_id')
-                            ->where('user_id', Auth::id())
-                            ->orWhere('user_id', $user_id)
-                            ->distinct()
-                            ->get()->toArray();
-        
-        foreach($rooms as $key => $value) {
-            $matchs = Participant::where('room_id', $rooms[$key]['room_id'])
-                                    ->where('user_id', $user_id)
-                                    ->first();
-            $matchs !== null ? $match = $matchs : $match = null;
+    {   
+        if($user_id == Auth::id()) {
+            return $this->sendResponse('failed', "You can't chat with yourself, get a life !", null, 400);
         }
 
-        $room = Room::firstOrCreate([ 'id'   => empty($match) ? null : $match->room_id ],
+        $user = User::findOrFail($user_id);
+
+        $room = Room::whereHas('participant', function($q) {
+                        $q->where('user_id', Auth::id());
+                    })->with(['participant' => function($query) use ($user_id) {
+                        $query->where('user_id', $user_id);
+                    }])->get('id', 'participant');
+                    
+        if(is_null($room->first()->participant->first())) {
+            $room = null;
+        } else {
+            $room = $room->first()->id;
+        }
+
+        $room = Room::firstOrCreate([ 'id'   => $room ],
                                     [ 'name' => auth()->user()->name . ' - ' . $user->name ]);
 
         if(empty($matchs)) {
@@ -71,17 +74,26 @@ class MessageController extends Controller
 
     public function getMessage($room_id)
     {
+
         $message = new Message;
-        $m = $message->where(function($query) use ($room_id) {
+        $message->where(function($query) use ($room_id) {
             $query->where('room_id', $room_id)
                   ->where('from_id', '!=', Auth::id())
                   ->where('status', 1);
         })->update(['status' => 2]);
         $message->refresh();
 
-        $messages = $message->where('room_id', $room_id)->get();
+        $messages = $message->where('room_id', $room_id)
+                            ->where(function($query) {
+                                $query->where('from_id', '!=', Auth::id())
+                                        ->orWhere('status', '!=', 3);
+                            })->get();
+        
+        // dd($messages);
 
-        return response()->json(MessageResource::collection($messages));
+        $messages = MessageResource::collection($messages);
+        
+        return $this->sendResponse('success', "Your messages is here", $messages, 400);
     }
 
     public function sendPrivateMessage(Request $request, $room_id)
@@ -95,9 +107,10 @@ class MessageController extends Controller
             'message' => $request->message,
         ]);
 
-        broadcast(new PrivateMessage($message->load('from')))->toOthers();
-
         $message = new MessageResource($message->load('from'));
+
+        broadcast(new PrivateMessage($message))->toOthers();
+
 
         return $this->sendResponse('succes', 'Message sent successfully', $message, 200);
     }
@@ -111,12 +124,14 @@ class MessageController extends Controller
         $message->deletedMessage()->create([
                                             'message_id'      => $message->id,
                                             'deleted_message' => $message->message,
+                                            'deleted_by_id'   => Auth::id(),
                                            ]);
-        if($message->status == 1) {
+                                           
+        if ($message->status == 1 && $message->from_id == Auth::id()) {
             $message->message = "Pesan ini telah di hapus oleh " . Auth::user()->name;
-            $message->status = 3;
-        } else {
             $message->status = 4;
+        } elseif ($message->status == 2 && $message->from_id == Auth::id()) {
+            $message->status = 3;
         }
         $message->deleted_at = now();
         $message->update();
