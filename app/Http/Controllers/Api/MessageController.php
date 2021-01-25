@@ -49,8 +49,12 @@ class MessageController extends Controller
                     return $item;
                 }
             });
-
-            $room_id = $room->first()->id;
+            
+            if(is_null($room->first())) {
+                $room_id = null;
+            } else {
+                $room_id = $room->first()->id;
+            }
         }
 
         $room = Room::firstOrCreate([ 'id'   => $room_id ],
@@ -110,7 +114,6 @@ class MessageController extends Controller
                                         ->orWhere('status', '!=', 3);
                             })->get();
         
-        // dd($messages);
 
         $messages = MessageResource::collection($messages);
         
