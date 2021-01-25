@@ -10,12 +10,12 @@ use App\Participant;
 use App\DeletedMessage;
 use Illuminate\Http\Request;
 use App\Events\PrivateMessage;
+use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\RoomResource;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Route;
 use App\Http\Resources\MessageResource;
 
 class MessageController extends Controller
@@ -28,11 +28,8 @@ class MessageController extends Controller
 
     public function makeRoom($user_id)
     {   
-        if($user_id == Auth::id()) {
-            return $this->sendResponse('failed', "You can't chat with yourself, get a life !", null, 400);
-        }
 
-        $user = User::findOrFail($user_id);
+        $user = User::find($user_id);
 
         $room = Room::whereHas('participant', function($q) {
                         $q->where('user_id', Auth::id());
@@ -71,19 +68,7 @@ class MessageController extends Controller
             }
         }
 
-        return response()->json($room->load('participant'));    
-
-        // lagi proses
-        // $req = Request::create('api/message/get-message/' . $room->id, 'GET', [
-        //     'headers' => [
-        //                     'Authorization' => "Bearer $token",
-        //                     'Accept'        => 'application/json'
-        //                  ]
-        // ]);
-        // $res = app()->handle($req);
-        // dd($res);
-
-        // $this->getMessage($room->id);
+        return $room->id;
     }
 
     public function showContact()
@@ -97,8 +82,22 @@ class MessageController extends Controller
         return response()->json(RoomResource::collection($room));
     }
 
-    public function getMessage($room_id)
+    public function fetchMessage(Request $request)
     {
+
+        $request->validate([
+            'room_id' => [ 'exists:App\Room,id' ],
+            'user_id' => [ Rule::requiredIf(empty($request->room_id)), 'user_role:roles,nasabah,pengurus-satu,bendahara' ],
+        ]);
+
+        if (empty($request->room_id)) { 
+            if($request->user_id == Auth::id()) {
+                return $this->sendResponse('failed', "You can't chat with yourself, get some friends !", null, 400);
+            }
+            $room_id = $this->makeRoom($request->user_id);
+        } else {
+            $room_id = $request->room_id;
+        }
 
         $message = new Message;
         $message->where(function($query) use ($room_id) {
@@ -117,16 +116,19 @@ class MessageController extends Controller
 
         $messages = MessageResource::collection($messages);
         
-        return $this->sendResponse('success', "Your messages is here", $messages, 400);
+        return $this->sendResponse('success', "Your messages is here", $messages, 200);
     }
 
-    public function sendPrivateMessage(Request $request, $room_id)
+    public function sendPrivateMessage(Request $request)
     {
+        $request->validate([
+            'room_id' => 'required|exists:rooms,id',
+        ]);
 
         $user = User::findOrFail(Auth::id());
 
         $message = $user->messages()->create([
-            'room_id' => $room_id,
+            'room_id' => $request->room_id,
             'from_id' => $user->id,
             'message' => $request->message,
         ]);
@@ -134,7 +136,6 @@ class MessageController extends Controller
         $message = new MessageResource($message->load('from'));
 
         broadcast(new PrivateMessage($message))->toOthers();
-
 
         return $this->sendResponse('succes', 'Message sent successfully', $message, 200);
     }

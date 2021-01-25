@@ -34,15 +34,19 @@ class AppServiceProvider extends ServiceProvider
         // $parameters = the values from the rule parameters ex: custom_rule:val1,val2,val3 
 
         Validator::extend('user_role', function($attribute, $value, $parameters, $validator) { // $validator->getData() consist of all request data that will be validated
-            $custom_message = "is not $parameters[1]"; 
-            
+
             $user = User::firstWhere('id', $value);
             
             if(empty($user)) {
-                $result  = FALSE;
+                $result = FALSE;
                 $custom_message = "doesn't exist !";
+            } elseif ($parameters[0] == 'roles') {
+                $arr_params = array_slice($parameters,1);
+                $result = $user->hasAnyRoles($arr_params);
+                $custom_message = "is not " . implode(" or ", $arr_params);
             } else {
                 $result = $user->hasRole($parameters[1]);
+                $custom_message = "is not $parameters[1]";
             }
 
             // in case you need to manage dynamic variable inside the extend function
