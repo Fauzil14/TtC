@@ -18,6 +18,10 @@ class TabunganUser extends Model
                             'saldo',
                           ];
 
+    public function nasabah() {
+        return $this->hasOne('App\User', 'id', 'nasabah_id');
+    }
+
     public function transaksi() {
         return $this->hasMany('App\Transaksi');
     }

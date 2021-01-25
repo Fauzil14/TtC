@@ -113,10 +113,12 @@ class MessageController extends Controller
                                         ->orWhere('status', '!=', 3);
                             })->get();
         
-
         $messages = MessageResource::collection($messages);
-        
-        return $this->sendResponse('success', "Your messages is here", $messages, 200);
+     
+        return response()->json([
+            'room_id'  => $room_id,
+            'messages' => $messages,
+        ], 200);
     }
 
     public function sendPrivateMessage(Request $request)
