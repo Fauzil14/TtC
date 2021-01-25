@@ -79,8 +79,6 @@ class MessageController extends Controller
             $q->where('user_id', '!=', Auth::id());
         }])->get();
 
-        return response()->json($room);
-
         return response()->json(RoomResource::collection($room));
     }
 
