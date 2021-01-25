@@ -39,6 +39,7 @@ Route::prefix('message')->namespace('Api')->middleware(['jwt.verify'])->group(fu
 
 Route::prefix('nasabah')->namespace('Api\Nasabah')->middleware(['jwt.verify', 'can:nasabah'])->group(function() {
     Route::get('home', 'HomeNasabahController@index');
+    Route::get('tabungan', 'NasabahController@getTabungan');
  
     // penjemputan
     Route::prefix('penjemputan')->group(function() {

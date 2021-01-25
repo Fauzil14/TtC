@@ -11,9 +11,11 @@ use App\DeletedMessage;
 use Illuminate\Http\Request;
 use App\Events\PrivateMessage;
 use Illuminate\Support\Facades\DB;
+use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\RoomResource;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 use App\Http\Resources\MessageResource;
 
 class MessageController extends Controller
@@ -37,28 +39,47 @@ class MessageController extends Controller
                     })->with(['participant' => function($query) use ($user_id) {
                         $query->where('user_id', $user_id);
                     }])->get('id', 'participant');
-                    
-        if(is_null($room->first()->participant->first())) {
-            $room = null;
+
+
+        if(is_null($room->first())) {
+            $room_id = null;
         } else {
-            $room = $room->first()->id;
+            $room = $room->filter(function($item) {
+                if(!is_null($item->participant->first())) {
+                    return $item;
+                }
+            });
+
+            $room_id = $room->first()->id;
         }
 
-        $room = Room::firstOrCreate([ 'id'   => $room ],
+        $room = Room::firstOrCreate([ 'id'   => $room_id ],
                                     [ 'name' => auth()->user()->name . ' - ' . $user->name ]);
 
-        if(empty($matchs)) {
+        if(is_null($room_id)) {
             $participants = [ Auth::id(), $user_id ];
                 
             foreach($participants as $participant) { 
-                $room->participant()->firstOrCreate([
+                $room->participant()->create([
                     'user_id' => $participant,
                     'room_id' => $room->id,
                 ]);
             }
         }
 
-        $this->getMessage($room->id);
+        return response()->json($room->load('participant'));    
+
+        // lagi proses
+        // $req = Request::create('api/message/get-message/' . $room->id, 'GET', [
+        //     'headers' => [
+        //                     'Authorization' => "Bearer $token",
+        //                     'Accept'        => 'application/json'
+        //                  ]
+        // ]);
+        // $res = app()->handle($req);
+        // dd($res);
+
+        // $this->getMessage($room->id);
     }
 
     public function showContact()
