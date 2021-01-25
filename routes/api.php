@@ -29,7 +29,6 @@ Route::prefix('profile')->namespace('Api')->middleware(['jwt.verify', 'can:profi
 });
 
 Route::prefix('message')->namespace('Api')->middleware(['jwt.verify'])->group(function() {
-    Route::get('/make-room/{user_id}', 'MessageController@makeRoom');
     Route::get('/show-contact', 'MessageController@showContact');
     Route::post('/fetch-message', 'MessageController@fetchMessage');
     Route::post('/send-message', 'MessageController@sendPrivateMessage');
