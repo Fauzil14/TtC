@@ -5,14 +5,9 @@ namespace App\Http\Controllers\Api;
 use App\Room;
 use App\User;
 use App\Message;
-use Carbon\Carbon;
-use App\Participant;
-use App\DeletedMessage;
 use Illuminate\Http\Request;
 use App\Events\PrivateMessage;
 use Illuminate\Validation\Rule;
-use Illuminate\Support\Facades\DB;
-use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\RoomResource;
 use Illuminate\Support\Facades\Auth;
@@ -116,6 +111,7 @@ class MessageController extends Controller
         $messages = MessageResource::collection($messages);
      
         return response()->json([
+            'status'  => 'success',
             'room_id'  => $room_id,
             'messages' => $messages,
         ], 200);

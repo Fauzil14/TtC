@@ -17,7 +17,7 @@ class TabuganNasabahResource extends JsonResource
         return [
             'id' => $this->id,
             'transaksi_id' => $this->transaksi_id,
-            'hari/tanggal' => $this->created_at->translatedFormat('l, d F Y'),
+            'tanggal' => $this->created_at->translatedFormat('l, d F Y'),
             'waktu' => $this->created_at->translatedFormat('H:i'),
             'keterangan' => ucwords($this->keterangan),
             'jenis_sampah' => $this->jenis_sampah,

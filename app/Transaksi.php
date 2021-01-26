@@ -16,7 +16,7 @@ class Transaksi extends Model
                           ];
     
     public function nasabah() {
-        return $this->hasOne('App\User');
+        return $this->hasOne('App\User', 'id', 'nasabah_id');
     }
     
     public function penyetoran() {

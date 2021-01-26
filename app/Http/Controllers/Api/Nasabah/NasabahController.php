@@ -12,7 +12,7 @@ class NasabahController extends Controller
 
     public function getTabungan()
     {
-        $tabungan = TabuganNasabahResource::collection(TabunganUser::where('nasabah_id', Auth::id())->get());
+        $tabungan = TabuganNasabahResource::collection(TabunganUser::orderByDesc('id')->where('nasabah_id', Auth::id())->get());
 
         return $this->sendResponse('succes', 'Data tabungan succesfully get', $tabungan, 200);
     }

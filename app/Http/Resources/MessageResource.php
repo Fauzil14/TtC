@@ -45,8 +45,8 @@ class MessageResource extends JsonResource
             'from'          => $this->from->only('id', 'name', 'profile_picture'),
             'message'       => $this->message,
             // $this->mergeWhen($currentRoute == "App\Http\Controllers\Api\MessageController@getMessage", [
-                'is_auth_user'  => $this->when($this->from_id == Auth::id(), TRUE, FALSE),
-                'is_message'    => $is_message,
+                'is_auth_user'    => $this->when($this->from_id == Auth::id(), TRUE, FALSE),
+                'is_message'      => $is_message,
                 'created_at_date' => $this->when($this->created_at->isToday(), 'Hari Ini', 
                                                     $this->created_at->isYesterday() ? 'Kemarin' 
                                                                                      : $this->created_at->translatedFormat('j F Y')),

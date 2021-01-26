@@ -10,6 +10,7 @@ use App\Penjualan;
 use Carbon\Carbon;
 use App\TransaksiBank;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -29,6 +30,15 @@ class PenjualanController extends Controller
 
     public function sellToPengepul(Request $request) 
     {
+        $request->validate([
+            'auto_confirm'          => ['sometimes'],
+            'pengepul_id'           => ['required', 'exists:pengepuls,id'],
+            'lokasi'                => ['required'],
+            'sampah'                => ['required'],
+            'sampah.*.sampah_id'    => ['required_with:sampah.*.berat', 'exists:App\Sampah,id', 'distinct'],
+            'sampah.*.berat'        => ['required_with:sampah.*.sampah_id']
+                        ]);
+        
         $sampahs = $request->sampah;
             
         foreach($sampahs as $sampah) {
