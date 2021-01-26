@@ -24,7 +24,10 @@ class SampahResource extends JsonResource
             'golongan_sampah' => $this->golonganSampah->golongan,
             'jenis_sampah' => $this->jenis_sampah,
             'harga_perkilogram' => $this->when($auth_user->hasRole('pengurus-satu'), $this->harga_perkilogram),
-            'harga_jual_perkilogram' => $this->when($auth_user->hasRole('pengurus-dua'), $this->harga_jual_perkilogram),
+            $this->mergeWhen($auth_user->hasRole('pengurus-dua'), [
+                'jumlah_stock' => $this->gudang->total_berat,
+                'harga_jual_perkilogram' => $this->harga_jual_perkilogram,
+            ])
         ];
     }
 }
