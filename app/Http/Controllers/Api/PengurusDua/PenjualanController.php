@@ -58,11 +58,11 @@ class PenjualanController extends Controller
 
         $data = DB::transaction(function() use($request, $sampahs) {   
             $pjl = Penjualan::firstOrCreate([
-                'tanggal' => Carbon::now()->toDateString(),
-                'pengurus2_id' => Auth::id(),
-                'pengepul_id' => $request->pengepul_id,
-                'lokasi' => $request->lokasi,
-                'status' => 'dalam proses',
+                'tanggal'       => Carbon::now()->toDateString(),
+                'pengurus2_id'  => Auth::id(),
+                'pengepul_id'   => $request->pengepul_id,
+                'lokasi'        => $request->lokasi,
+                'status'        => 'dalam proses',
             ]);
 
             foreach($sampahs as $sampah) {

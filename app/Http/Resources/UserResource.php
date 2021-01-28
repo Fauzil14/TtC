@@ -21,7 +21,8 @@ class UserResource extends JsonResource
             'no_telephone' => $this->no_telephone,
             'profile_picture' => $this->profile_picture,
             'penjemputan' => $this->whenLoaded('penjemputan'),
-            'message' => $this->whenLoaded('messages')
+            'message' => $this->whenLoaded('messages'),
+            'role' => $this->roles->first()->name
         ];
     }
 }

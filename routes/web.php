@@ -20,4 +20,6 @@ Route::get('/', function () {
 
 Auth::routes(['verify' => true]);
 
-Route::get('/home', 'HomeController@index')->name('home')->middleware('verified');
+Route::get('/home', 'HomeController@index')->middleware('verified')->name('home');
+Route::get('/dashboard', 'HomeController@dashboard')->middleware('verified', 'can:management-web')->name('dashboard');
+Route::get('/dashboard/nasabah', 'NasabahController@index')->middleware('verified', 'can:management-web')->name('nasabah');

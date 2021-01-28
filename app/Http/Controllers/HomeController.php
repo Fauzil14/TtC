@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\UserResource;
 use App\Role;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -32,7 +34,12 @@ class HomeController extends Controller
         $roles = Role::all();
         $message = "this page is for treasurer";
 
-        return view('test')->with(compact(['role', 'roles', 'message']));
+        return view('home')->with(compact(['role', 'roles', 'message']));
+    }
+
+    public function dashboard() 
+    {        
+        return view('dashboard');
     }
 
 }

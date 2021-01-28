@@ -11,6 +11,7 @@ class Penjualan extends Model
                             'pengurus2_id',
                             'pengepul_id',
                             'lokasi',
+                            'status',
                             'total_berat_penjualan',
                             'total_debit_bank',
                           ];

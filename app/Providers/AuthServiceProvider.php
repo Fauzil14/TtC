@@ -35,6 +35,10 @@ class AuthServiceProvider extends ServiceProvider
 
         });
 
+        Gate::define('management-web', function($user) {
+            return $user->hasAnyRoles(['admin', 'bendahara']);
+        });
+
         Gate::define('nasabah', function($user) {
             return $user->hasRole('nasabah')
                             ? Response::allow()
