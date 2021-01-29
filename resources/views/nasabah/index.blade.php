@@ -66,7 +66,7 @@
           <!-- small box -->
           <div class="small-box bg-warning">
             <div class="inner">
-              <h3>44</h3>
+              <h3>{{ $nasabahs->count() }}</h3>
 
               <p>User Registrations</p>
             </div>
@@ -94,51 +94,11 @@
         <!-- ./col -->
       </div>
       <!-- /.row -->
-{{-- 
-  <!-- Main content -->
-  <section class="content">
-      <div class="container-fluid">
-          <div class="row">
-              <div class="col-lg-12">
-                  <div class="card">
-                      <div class="card-header">
-                          <h3 class="card-title">Daftar Nasabah</h3>
-                      </div>    
-                  <div class="card-body">
-                      <div class="card-body table-responsive p-0">
-                          <table class="table table-hover text-nowrap" id="datatable">
-                              <thead>
-                              <tr>
-                                  <th> Nama Produk </th>
-                                  <th> Satuan </th>
-                                  <th> Harga Beli </th>
-                                  <th> Harga Jual </th>
-                                  <th> Created At </th>
-
-                              </tr>
-                              </thead>
-                              <tbody>
-                                  @foreach ($nasabahs as $nasabah)
-                                  <tr>
-                                      <td>{{ $nasabah->name }}</td>
-                                      <td>{{ $nasabah->email }}</td>
-                                      <td>{{ $nasabah->no_telephone }}</td>
-                                      <td>{{ $nasabah->location }}</td>
-                                      <td>{{ $nasabah->created_at }}</td>
-                                  </tr>
-                                  @endforeach
-                              </tbody>
-                          </table>
-                      </div>
-                  </div>
-              </div>
-          </div>
-      </div>
-  </section> --}}
 
   <div class="card">
     <div class="card-header">
       <h3 class="card-title">Daftar Nasabah</h3>
+      <i class="material-icons person_add"></i>
     </div>
     <!-- /.card-header -->
     <div class="card-body">
@@ -164,7 +124,13 @@
             <td>{{ $nasabah->no_telephone }}</td>
             <td>{{ $nasabah->location }}</td>
             <td>{{ $nasabah->created_at->translatedFormat('d/m/Y H:i') }}</td>
-            <td><button>Edit</button><button>Delete</button></td>
+            <td>
+              <i class="fas fa-info-circle" style="font-size:23px;color:blue"></i>
+              @can('admin')
+                <i class="far fa-edit" style="font-size:25px;color:green"></i>
+                <i class="fas fa-trash-alt" style="font-size:25px;color:red"></i>
+              @endcan
+            </td>
           </tr>
         @endforeach
 
@@ -269,7 +235,6 @@
 
       var table = $('#example1').DataTable({
         "responsive": true, "lengthChange": false, "autoWidth": false,
-        dom: 'Bftrip',
         buttons: ['copy', 'csv', 'excel', 'pdf', 'print', 'colvis'] // print = bug
       }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
       
@@ -277,10 +242,6 @@
     } );
 
   $(function () {
-    // $("#example1").DataTable({
-    //   "responsive": true, "lengthChange": false, "autoWidth": false,
-      // "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-    // }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
     $('#example2').DataTable({
       "paging": true,
       "lengthChange": false,

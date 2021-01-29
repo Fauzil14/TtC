@@ -17,4 +17,5 @@ class HomeNasabahController extends Controller
 
         return response()->json($user);
     }
+    
 }

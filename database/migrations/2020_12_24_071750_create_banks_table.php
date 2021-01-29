@@ -16,6 +16,7 @@ class CreateBanksTable extends Migration
     {
         Schema::create('banks', function (Blueprint $table) {
             $table->id();
+            $table->string('alamat_bank');
             $table->decimal('total_sampah_masuk', 10, 2)->default(0);
             $table->decimal('total_sampah_keluar', 10, 2)->default(0);
             $table->decimal('total_debit_nasabah', 10, 2)->default(0);
@@ -25,7 +26,10 @@ class CreateBanksTable extends Migration
             $table->timestamps();
         });
 
-        DB::table('banks')->insert([ 'total_saldo' => 10000000 ]);
+        DB::table('banks')->insert([
+                                    'alamat_bank' => 
+                                    'total_saldo' => 10000000 
+                                    ]);
     }
 
     /**
