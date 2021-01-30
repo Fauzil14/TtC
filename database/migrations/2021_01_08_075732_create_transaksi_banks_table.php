@@ -19,15 +19,15 @@ class CreateTransaksiBanksTable extends Migration
         Schema::create('transaksi_banks', function (Blueprint $table) use ($tanggal) {
             $table->id();
             $table->date('hari/tanggal')->default($tanggal);
-            $table->foreignId('pegawai_id')->constrained('users');
+            $table->foreignId('pegawai_id')->constrained('users')->onDelete('cascade');
             $table->enum('keterangan_pengurus', ['pengurus-satu', 'pengurus-dua', 'bendahara']);
             $table->enum('keterangan_transaksi', ['debet_nasabah', 'kredit_nasabah', 'penjualan_bank']);
             $table->unsignedBigInteger('transaksi_id')->nullable();
             $table->unsignedBigInteger('penjualan_id')->nullable();
             $table->timestamps();
 
-            $table->foreign('transaksi_id')->references('id')->on('transaksis');
-            $table->foreign('penjualan_id')->references('id')->on('penjualans');
+            $table->foreign('transaksi_id')->references('id')->on('transaksis')->onDelete('cascade');
+            $table->foreign('penjualan_id')->references('id')->on('penjualans')->onDelete('cascade');
         });
     }
 

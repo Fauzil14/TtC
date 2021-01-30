@@ -19,8 +19,8 @@ class CreatePenyetoransTable extends Migration
         Schema::create('penyetorans', function (Blueprint $table) use ($tanggal) {
             $table->id();
             $table->date('tanggal')->default($tanggal);
-            $table->foreignId('nasabah_id')->constrained('users');
-            $table->foreignId('pengurus1_id')->constrained('users');
+            $table->foreignId('nasabah_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('pengurus1_id')->constrained('users')->onDelete('cascade');
             $table->enum('keterangan_penyetoran', ['diantar', 'dijemput']);
             $table->unsignedBigInteger('penjemputan_id')->nullable();
             $table->text('lokasi')->nullable();
@@ -29,7 +29,7 @@ class CreatePenyetoransTable extends Migration
             $table->enum('status', ['dalam proses', 'selesai']);
             $table->timestamps();
 
-            $table->foreign('penjemputan_id')->references('id')->on('penjemputans');
+            $table->foreign('penjemputan_id')->references('id')->on('penjemputans')->onDelete('cascade');
         });
     }
 

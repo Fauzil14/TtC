@@ -19,14 +19,14 @@ class CreateTransaksisTable extends Migration
         Schema::create('transaksis', function (Blueprint $table) use ($tanggal) {
             $table->id();
             $table->date('tanggal')->default($tanggal);
-            $table->foreignId('nasabah_id')->constrained('users');
+            $table->foreignId('nasabah_id')->constrained('users')->onDelete('cascade');
             $table->enum('keterangan_transaksi', ['diantar', 'dijemput', 'penarikan']);
             $table->unsignedBigInteger('penyetoran_id')->nullable();
             $table->decimal('debet', 10, 2)->nullable();
             $table->decimal('kredit', 10, 2)->nullable();
             $table->timestamps();
 
-            $table->foreign('penyetoran_id')->references('id')->on('penyetorans');
+            $table->foreign('penyetoran_id')->references('id')->on('penyetorans')->onDelete('cascade');
         });
     }
 

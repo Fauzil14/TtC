@@ -21,5 +21,11 @@ Route::get('/', function () {
 Auth::routes(['verify' => true]);
 
 Route::get('/home', 'HomeController@index')->middleware('verified')->name('home');
-Route::get('/dashboard', 'HomeController@dashboard')->middleware('verified', 'can:management-web')->name('dashboard');
-Route::get('/dashboard/nasabah', 'NasabahController@index')->middleware('verified', 'can:management-web')->name('nasabah');
+
+Route::prefix('dashboard')->middleware(['verified', 'can:management-web'])->group(function() {
+    Route::get('/', 'HomeController@dashboard')->name('dashboard');
+    Route::get('/nasabah', 'NasabahController@index')->name('nasabah');
+    Route::post('/nasabah/tambah', 'NasabahController@tambahNasabah')->middleware('can:admin')->name('tambah.nasabah');
+    Route::put('/nasabah/udpate', 'NasabahController@udpateNasabah')->middleware('can:admin')->name('udpate.nasabah');
+    Route::get('/nasabah/delete/{user_id}', 'NasabahController@delete')->middleware('can:admin')->name('delete.nasabah');
+});

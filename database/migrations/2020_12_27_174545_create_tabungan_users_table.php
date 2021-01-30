@@ -18,8 +18,8 @@ class CreateTabunganUsersTable extends Migration
 
         Schema::create('tabungan_users', function (Blueprint $table) use ($tanggal) {
             $table->id();
-            $table->foreignId('nasabah_id')->constrained('users');
-            $table->foreignId('transaksi_id')->constrained('transaksis');
+            $table->foreignId('nasabah_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('transaksi_id')->constrained('transaksis')->onDelete('cascade');
             $table->date('hari/tanggal')->default($tanggal);
             $table->enum('keterangan', ['diantar', 'dijemput', 'penarikan']);
             $table->string('jenis_sampah')->nullable();

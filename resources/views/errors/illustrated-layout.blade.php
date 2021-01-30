@@ -20,6 +20,9 @@
 
             body {
                 margin: 0;
+                background-image: url('/img/background/pexels-tom-fisk-3181031.jpg');
+                background-size: 100% 100%;
+                background-repeat:no-repeat;
             }
 
             header,
@@ -475,6 +478,11 @@
                     <a href="{{ app('router')->has('home') ? route('home') : url('/') }}">
                         <button class="bg-transparent text-grey-darkest font-bold uppercase tracking-wide py-3 px-6 border-2 border-grey-light hover:border-grey rounded-lg">
                             {{ __('Go Home') }}
+                        </button>
+                    </a>
+                    <a href="{{ url()->previous() }}">
+                        <button class="bg-transparent text-grey-darkest font-bold uppercase tracking-wide py-3 px-6 border-2 border-grey-light hover:border-grey rounded-lg">
+                            {{ __('Go Back') }}
                         </button>
                     </a>
                     <a href="{{ route('logout') }}"

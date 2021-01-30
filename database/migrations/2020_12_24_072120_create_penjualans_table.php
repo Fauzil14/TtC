@@ -19,8 +19,8 @@ class CreatePenjualansTable extends Migration
         Schema::create('penjualans', function (Blueprint $table) use ($tanggal) {
             $table->id();
             $table->date('tanggal')->default($tanggal);
-            $table->foreignId('pengurus2_id')->constrained('users');
-            $table->foreignId('pengepul_id')->constrained('pengepuls');
+            $table->foreignId('pengurus2_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('pengepul_id')->constrained('pengepuls')->onDelete('cascade');
             $table->text('lokasi')->nullable();
             $table->decimal('total_berat_penjualan', 10, 2)->nullable();
             $table->decimal('total_debit_bank', 10, 2)->nullable();

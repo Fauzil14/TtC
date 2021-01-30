@@ -15,7 +15,7 @@ class CreateSampahsTable extends Migration
     {
         Schema::create('sampahs', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('golongan_sampah_id')->constrained('golongan_sampahs');
+            $table->foreignId('golongan_sampah_id')->constrained('golongan_sampahs')->onDelete('cascade');
             $table->string('jenis_sampah');
             $table->string('contoh')->nullable();
             $table->decimal('harga_perkilogram', 8, 2);

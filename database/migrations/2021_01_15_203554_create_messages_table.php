@@ -22,7 +22,7 @@ class CreateMessagesTable extends Migration
 
         Schema::create('messages', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('room_id')->constrained('rooms');
+            $table->foreignId('room_id')->constrained('rooms')->onDelete('cascade');
             $table->unsignedBigInteger('from_id');
             $table->string('message');
             $table->tinyInteger('status')->default(1);

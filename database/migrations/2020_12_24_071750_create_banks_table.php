@@ -27,7 +27,7 @@ class CreateBanksTable extends Migration
         });
 
         DB::table('banks')->insert([
-                                    'alamat_bank' => 
+                                    'alamat_bank' => 'https://goo.gl/maps/AJDPv2BDLnjh8wzz6',
                                     'total_saldo' => 10000000 
                                     ]);
     }

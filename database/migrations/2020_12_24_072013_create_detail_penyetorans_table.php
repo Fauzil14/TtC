@@ -15,8 +15,8 @@ class CreateDetailPenyetoransTable extends Migration
     {
         Schema::create('detail_penyetorans', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('penyetoran_id')->constrained('penyetorans');
-            $table->foreignId('sampah_id')->constrained('sampahs');
+            $table->foreignId('penyetoran_id')->constrained('penyetorans')->onDelete('cascade');
+            $table->foreignId('sampah_id')->constrained('sampahs')->onDelete('cascade');
             $table->decimal('berat', 8, 2);
             $table->decimal('harga', 10, 2);
             $table->decimal('debit_nasabah', 10, 2);
