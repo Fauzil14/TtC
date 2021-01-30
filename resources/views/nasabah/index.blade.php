@@ -133,7 +133,10 @@
             <td>
               <i class="fas fa-info-circle" style="font-size:23px;color:blue"></i>
               @can('admin')
-                <i class="far fa-edit" style="font-size:25px;color:green"></i>
+              <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modal-success">
+                Launch Success Modal
+              </button>
+                <i class="far fa-edit" style="font-size:25px;color:green" data-toggle="modal" data-target="#modal-success" ></i>
                 <a href="{{ route('delete.nasabah', $nasabah->id) }}"><i class="fas fa-trash-alt" style="font-size:25px;color:red"></i></a>
               @endcan
             </td>
@@ -220,68 +223,6 @@
       </div>
       <!-- /.modal -->
 
-      <div class="modal fade" id="modal-success">
-        <div class="modal-dialog">
-          <div class="modal-content bg-success">
-            <div class="modal-header">
-              <h4 class="modal-title">Update Nasabah</h4>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              <!-- form start -->
-              <form method="POST" action="{{ route('update.nasabah') }}" enctype="multipart/form-data">
-                @csrf
-                @method('PUT')
-
-                <input type="hidden" name="user_id" value="{{  }}">
-
-                <div class="card-body">
-                  <div class="form-group">
-                    <label for="inputName">Nama</label>
-                    <input type="text" class="form-control" name="name" id="inputName" placeholder="Masukkan nama">
-                  </div>
-                  <div class="form-group">
-                    <label for="exampleInputEmail1">Alamat Email</label>
-                    <input type="email" class="form-control" name="email" id="exampleInputEmail1" placeholder="Masukkan email">
-                  </div>
-                  <div class="form-group">
-                    <label for="exampleInputPassword1">Password</label>
-                    <input type="password" class="form-control" name="password" id="exampleInputPassword1" placeholder="Password">
-                  </div>
-                  <div class="form-group">
-                    <label for="inputPassword">No Telepon</label>
-                    <input type="text" class="form-control" name="no_telephone" id="inputPassword" placeholder="No Telepon">
-                  </div>
-                  <div class="form-group">
-                    <label for="inputLokasi">Alamat</label>
-                    <input type="text" class="form-control" name="location" id="inputLokasi" placeholder="Alamat">
-                  </div>
-                  <div class="form-group">
-                    <label for="exampleInputFile">Profile Picture</label>
-                    <div class="input-group">
-                      <div class="custom-file">
-                        <input type="file" class="custom-file-input" name="profile_picture" id="exampleInputFile">
-                        <label class="custom-file-label" for="exampleInputFile">Choose file</label>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <!-- /.card-body -->
-              
-            <!-- /.card -->
-            <div class="modal-footer justify-content-between">
-              <button type="button" class="btn btn-outline-light" data-dismiss="modal">Close</button>
-              <button type="submit" class="btn btn-outline-light">Simpan</button>
-            </div>
-            </form>
-          </div>
-          <!-- /.modal-content -->
-        </div>
-        <!-- /.modal-dialog -->
-      </div>
-      <!-- /.modal -->
 
 
     </div><!-- /.container-fluid -->

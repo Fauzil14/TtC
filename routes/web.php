@@ -26,6 +26,6 @@ Route::prefix('dashboard')->middleware(['verified', 'can:management-web'])->grou
     Route::get('/', 'HomeController@dashboard')->name('dashboard');
     Route::get('/nasabah', 'NasabahController@index')->name('nasabah');
     Route::post('/nasabah/tambah', 'NasabahController@tambahNasabah')->middleware('can:admin')->name('tambah.nasabah');
-    Route::put('/nasabah/udpate', 'NasabahController@udpateNasabah')->middleware('can:admin')->name('udpate.nasabah');
+    Route::put('/nasabah/udpate', 'NasabahController@udpateNasabah')->middleware('can:admin')->name('update.nasabah');
     Route::get('/nasabah/delete/{user_id}', 'NasabahController@delete')->middleware('can:admin')->name('delete.nasabah');
 });
