@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Room;
 use App\User;
 use App\Message;
+use Pusher\Pusher;
 use Illuminate\Http\Request;
 use App\Events\PrivateMessage;
 use Illuminate\Validation\Rule;
@@ -132,8 +133,18 @@ class MessageController extends Controller
         ]);
 
         $message = new MessageResource($message->load('from'));
+        
+        $pusher = new Pusher(
+            env('PUSHER_APP_KEY'),
+            env('PUSHER_APP_SECRET'),
+            env('PUSHER_APP_ID'),
+            [
+                'cluster' => env('PUSHER_APP_CLUSTER'),
+                'useTLS' => true,
+            ],
+        );
 
-        broadcast(new PrivateMessage($message))->toOthers();
+        $pusher->trigger('my-channel', 'my-event', $message);
 
         return $this->sendResponse('succes', 'Message sent successfully', $message, 200);
     }

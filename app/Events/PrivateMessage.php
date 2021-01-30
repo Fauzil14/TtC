@@ -33,14 +33,18 @@ class PrivateMessage implements ShouldBroadcast
      *
      * @return \Illuminate\Broadcasting\Channel|array
      */
+    // public function broadcastOn()
+    // {
+    //     return new PrivateChannel('privatechat.'.$this->message->room_id);
+    // }
+
     public function broadcastOn()
     {
-        // return new PrivateChannel('privatechat.'.$this->message->room_id);
-        return new PrivateChannel('privatechat');
+        return ['my-channel'];
     }
 
     public function broadcastAs()
     {
-        return 'private-chat';
+        return 'my-event';
     }
 }
