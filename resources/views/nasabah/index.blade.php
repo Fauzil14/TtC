@@ -155,24 +155,25 @@
                     <td>{{ $nasabah->no_telephone }}</td>
                     <td>{{ $nasabah->location }}</td>
                     <td>{{ $nasabah->created_at->translatedFormat('d/m/Y H:i') }}</td>
-                    <td>
-                      <i class="fas fa-info-circle" style="font-size:23px;color:blue"></i>
-                      @can('admin')
-                        <a
-                            href="#"
-                            data-toggle="modal" 
-                            data-target="#modal-success" 
-                            data-id="{{ $nasabah->id }}" 
-                            data-name="{{ $nasabah->name }}" 
-                            data-email="{{ $nasabah->email }}" 
-                            data-no_telephone="{{ $nasabah->no_telephone }}"
-                            data-location="{{ $nasabah->location }}"
-                            data-profile_picture="{{ $nasabah->profile_picture }}"
-                          >
-                          <i class="far fa-edit" style="font-size:25px;color:green"></i>
-                        </a>
-                        <a href="{{ route('delete.nasabah', $nasabah->id) }}"><i class="fas fa-trash-alt" style="font-size:25px;color:red"></i></a>
-                      @endcan
+                    <td class="text-right py-0 align-middle">
+                      <div class="btn-group btn-group-sm">
+                        <a href="#" class="btn btn-info"><i class="fas fa-eye"></i></a>
+                        @can('admin')
+                          <a href="#"
+                             data-toggle="modal" 
+                             data-target="#modal-success" 
+                             data-id="{{ $nasabah->id }}" 
+                             data-name="{{ $nasabah->name }}" 
+                             data-email="{{ $nasabah->email }}" 
+                             data-no_telephone="{{ $nasabah->no_telephone }}"
+                             data-location="{{ $nasabah->location }}"
+                             data-profile_picture="{{ $nasabah->profile_picture }}"
+                             class="btn btn-success">
+                             <i class="fas fa-edit"></i>
+                          </a>
+                          <a href="{{ route('delete.nasabah', [ 'user_id' => $nasabah->id ]) }}" class="btn btn-danger"><i class="fas fa-trash"></i></a>
+                        @endcan
+                      </div>
                     </td>
                   </tr>
                 @endforeach
@@ -200,7 +201,7 @@
               <div class="modal-content bg-primary">
                 <div class="modal-header">
                   <h4 class="modal-title">Tambah Nasabah</h4>
-                  <button type="button" id="close-tambah" class="close" data-dismiss="modal" aria-label="Close">
+                  <button type="button" class="close close-tambah" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                   </button>
                 </div>
@@ -263,7 +264,7 @@
                       
                     <!-- /.card -->
                     <div class="modal-footer justify-content-between">
-                      <button type="button" class="btn btn-outline-light" data-dismiss="modal">Close</button>
+                      <button type="button" class="btn btn-outline-light close-tambah" data-dismiss="modal">Close</button>
                       <button type="submit" class="btn btn-outline-light">Simpan</button>
                     </form>
                   </div>
@@ -275,8 +276,6 @@
             </div>
             <!-- /.modal -->
 
-
-
   </div>
   <!-- /.container-fluid -->
 
@@ -287,7 +286,7 @@
         <div class="modal-content bg-success">
           <div class="modal-header">
             <h4 class="modal-title">Update Nasabah</h4>
-            <button type="button" id="close-update" class="close" data-dismiss="modal" aria-label="Close">
+            <button type="button" class="close close-update" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">×</span>
             </button>
           </div>
@@ -359,7 +358,7 @@
                 
                     <!-- /.card -->
                     <div class="modal-footer justify-content-between">
-                      <button type="button" class="btn btn-outline-light" data-dismiss="modal">Close</button>
+                      <button type="button" class="btn btn-outline-light close-update" data-dismiss="modal">Close</button>
                       <button type="submit" class="edit btn btn-outline-light">Simpan Perubahan</button>
                     </div>
                   </form>
@@ -413,13 +412,21 @@
   </script>
 
   <script>
-    $('#close-tambah').on('click', function () {
+    $('.close-tambah').on('click', function () {
       $("#modal-primary").find('.is-invalid').removeClass("is-invalid");
       $("#modal-primary").find('.is-valid').removeClass("is-valid");
       $("#modal-primary").find('.invalid-feedback').remove();
       $("#modal-primary").find('.valid-feedback').remove();
       $("#modal-primary").find('.error-message').remove();
-  });
+    });
+
+    $('.close-update').on('click', function () {
+      $("#modal-success").find('.is-invalid').removeClass("is-invalid");
+      $("#modal-success").find('.is-valid').removeClass("is-valid");
+      $("#modal-success").find('.invalid-feedback').remove();
+      $("#modal-success").find('.valid-feedback').remove();
+      $("#modal-success").find('.error-message').remove();
+    });
   </script>
 
   <script>
