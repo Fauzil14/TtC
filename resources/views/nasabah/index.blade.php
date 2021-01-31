@@ -20,6 +20,18 @@
 @endsection
 
 @section('content')
+
+@php
+
+  if( $errors->tambah->any() ) {
+    alert()->error('Gagal', 'Gagal menambahkan nasabah baru');
+  }
+  if( $errors->edit->any() ) {
+    alert()->error('Gagal', 'Gagal mengupdate data nasabah');
+  }
+
+@endphp
+
 <!-- Content Header (Page header) -->
 <div class="content-header">
     <div class="container-fluid">
@@ -188,7 +200,7 @@
               <div class="modal-content bg-primary">
                 <div class="modal-header">
                   <h4 class="modal-title">Tambah Nasabah</h4>
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <button type="button" id="close-tambah" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                   </button>
                 </div>
@@ -201,30 +213,48 @@
                         <div class="card-body">
                           <div class="form-group">
                             <label for="inputName">Nama</label>
-                            <input type="text" class="form-control" name="name" id="inputName" placeholder="Masukkan nama">
+                            <input type="text" class="form-control @error('name', 'tambah') is-invalid @enderror" name="name" id="inputName" placeholder="Masukkan nama">
+                            @error('name', 'tambah')
+                              <strong class="error-message" style="color: hsl(218, 77%, 88%);">{{ $message }}</strong>
+                            @enderror
                           </div>
                           <div class="form-group">
                             <label for="exampleInputEmail1">Alamat Email</label>
-                            <input type="email" class="form-control" name="email" id="exampleInputEmail1" placeholder="Masukkan email">
+                            <input type="email" class="form-control @error('email', 'tambah') is-invalid @enderror" name="email" id="exampleInputEmail1" placeholder="Masukkan email">
+                            @error('email', 'tambah')
+                              <strong class="error-message" style="color: hsl(218, 77%, 88%);">{{ $message }}</strong>
+                            @enderror
                           </div>
                           <div class="form-group">
                             <label for="exampleInputPassword1">Password</label>
-                            <input type="password" class="form-control" name="password" id="exampleInputPassword1" placeholder="Password">
+                            <input type="password" class="form-control @error('password', 'tambah') is-invalid @enderror" name="password" id="exampleInputPassword1" placeholder="Password">
+                            @error('password', 'tambah')
+                              <strong class="error-message" style="color: hsl(218, 77%, 88%);">{{ $message }}</strong>
+                            @enderror
                           </div>
                           <div class="form-group">
                             <label for="inputNoTelephone">No Telepon</label>
-                            <input type="text" class="form-control" name="no_telephone" id="inputNoTelephone" placeholder="No Telepon">
+                            <input type="text" class="form-control @error('no_telephone', 'tambah') is-invalid @enderror" name="no_telephone" id="inputNoTelephone" placeholder="No Telepon">
+                            @error('no_telephone', 'tambah')
+                              <strong class="error-message" style="color: hsl(218, 77%, 88%);">{{ $message }}</strong>
+                            @enderror
                           </div>
                           <div class="form-group">
                             <label for="inputLokasi">Alamat</label>
-                            <input type="text" class="form-control" name="location" id="inputLokasi" placeholder="Alamat">
+                            <input type="text" class="form-control @error('location', 'tambah') is-invalid @enderror" name="location" id="inputLokasi" placeholder="Alamat">
+                            @error('location', 'tambah')
+                              <strong class="error-message" style="color: hsl(218, 77%, 88%);">{{ $message }}</strong>
+                            @enderror
                           </div>
                           <div class="form-group">
                             <label for="exampleInputFile">Profile Picture</label>
                             <div class="input-group">
                               <div class="custom-file">
                                 <input type="file" class="custom-file-input" name="profile_picture" id="exampleInputFile">
-                                <label class="custom-file-label" for="exampleInputFile">Choose file</label>
+                                <label class="custom-file-label @error('profile_picture', 'tambah') is-invalid @enderror" for="exampleInputFile">Choose file</label>
+                                @error('profile_picture', 'tambah')
+                                  <strong class="error-message" style="color: hsl(218, 77%, 88%);">{{ $message }}</strong>
+                                @enderror  
                               </div>
                             </div>
                           </div>
@@ -245,104 +275,105 @@
             </div>
             <!-- /.modal -->
 
-    {{-- @if (count($errors) > 0)
-    <script type="text/javascript">  
-      $(document).ready(function(){
-      $('#update').modal('show');
-      });
-    </script>
-    @endif --}}
-    {{-- <script type="text/javascript">
-      @if (count($errors) > 0)
-          $('#update').modal('show');
-      @endif
-      </script> --}}
 
 
-  </div><!-- /.container-fluid -->
+  </div>
+  <!-- /.container-fluid -->
 
 
+  <div class="container-fluid">
+    <div class="modal fade" id="modal-success">
+      <div class="modal-dialog">
+        <div class="modal-content bg-success">
+          <div class="modal-header">
+            <h4 class="modal-title">Update Nasabah</h4>
+            <button type="button" id="close-update" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+
+          <div class="modal-body">
+                  <!-- Main content -->
+
+              <!-- form start -->
+              <form method="POST" action="{{ route('update.nasabah') }}" enctype="multipart/form-data">
+              @csrf
+              @method('PUT')
+
+                <div class="modal-body">
+                    <div class="text-center">
+                      <img src="" id="profile-picture" class="user elevation-2" alt="User Image">
+                    </div>
+                
+                    <input type="hidden" id="user_id" name="user_id">
+                    <div class="card-body">
+                      <div class="form-group">
+                        <label for="inputName2">Nama</label>
+                        <input type="text" class="form-control @error('name', 'edit') is-invalid @enderror" name="name" id="inputName2" placeholder="Masukkan nama">
+                        @error('name', 'edit')
+                          <strong class="error-message" style="color: hsl(218, 77%, 88%);">{{ $message }}</strong>
+                        @enderror
+                      </div>
+                      <div class="form-group">
+                        <label for="exampleInputEmail2">Alamat Email</label>
+                        <input type="email" class="form-control @error('email', 'edit') is-invalid @enderror" name="email" id="exampleInputEmail2" placeholder="Masukkan email">
+                        @error('email', 'edit')
+                          <strong class="error-message" style="color: hsl(218, 77%, 88%);">{{ $message }}</strong>
+                        @enderror
+                      </div>
+                      <div class="form-group">
+                        <label for="exampleInputPassword2">Password</label>
+                        <input type="text" class="form-control @error('password', 'edit') is-invalid @enderror" name="password" id="exampleInputPassword2" placeholder="Password">
+                        @error('password', 'edit')
+                          <strong class="error-message" style="color: hsl(218, 77%, 88%);">{{ $message }}</strong>
+                        @enderror
+                      </div>
+                      <div class="form-group">
+                        <label for="inputNoTelephone2">No Telepon</label>
+                        <input type="text" class="form-control @error('no_telephone', 'edit') is-invalid @enderror" name="no_telephone" id="inputNoTelephone2" placeholder="No Telepon">
+                        @error('no_telephone', 'edit')
+                          <strong class="error-message" style="color: hsl(218, 77%, 88%);">{{ $message }}</strong>
+                        @enderror
+                      </div>
+                      <div class="form-group">
+                        <label for="inputLokasi2">Alamat</label>
+                        <input type="text" class="form-control @error('location', 'edit') is-invalid @enderror" name="location" id="inputLokasi2" placeholder="Alamat">
+                        @error('location', 'edit')
+                          <strong class="error-message" style="color: hsl(218, 77%, 88%);">{{ $message }}</strong>
+                        @enderror
+                      </div>
+                      <div class="form-group">
+                        <label for="exampleInputFile2">Profile Picture</label>
+                        <div class="input-group">
+                          <div class="custom-file">
+                            <input type="file" class="custom-file-input" name="profile_picture" id="exampleInputFile2">
+                            <label class="custom-file-label @error('profile_picture', 'edit') is-invalid @enderror" for="exampleInputFile2">Choose file</label>
+                            @error('location', 'edit')
+                              <strong class="error-message" style="color: hsl(218, 77%, 88%);">{{ $message }}</strong>
+                            @enderror  
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- /.card-body -->
+                
+                    <!-- /.card -->
+                    <div class="modal-footer justify-content-between">
+                      <button type="button" class="btn btn-outline-light" data-dismiss="modal">Close</button>
+                      <button type="submit" class="edit btn btn-outline-light">Simpan Perubahan</button>
+                    </div>
+                  </form>
+              </div>
+
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
+      <!-- /.modal -->
+  </div>
 </section>
 
-<section>
-    <div class="container-fluid">
-        <div class="modal fade" id="modal-success">
-          <div class="modal-dialog">
-            <div class="modal-content bg-success">
-              <div class="modal-header">
-                <h4 class="modal-title">Update Nasabah</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">×</span>
-                </button>
-              </div>
-
-              <div class="modal-body">
-                      <!-- Main content -->
-
-                  <!-- form start -->
-                  <form method="POST" action="{{ route('update.nasabah') }}" enctype="multipart/form-data">
-                  @csrf
-                  @method('PUT')
-
-                    <div class="modal-body">
-                        <div class="text-center">
-                          <img src="" id="profile-picture" class="user elevation-2" alt="User Image">
-                        </div>
-                    
-                        <input type="hidden" id="user_id" name="user_id">
-                        <div class="card-body">
-                          <div class="form-group">
-                            <label for="inputName2">Nama</label>
-                            <input type="text" class="form-control" name="name" id="inputName2" placeholder="Masukkan nama">
-                          </div>
-                          <div class="form-group">
-                            <label for="exampleInputEmail2">Alamat Email</label>
-                            <input type="email" class="form-control" name="email" id="exampleInputEmail2" placeholder="Masukkan email">
-                          </div>
-                          <div class="form-group">
-                            <label for="exampleInputPassword2">Password</label>
-                            <input type="text" class="form-control @error('password') is-invalid @enderror" name="password" id="exampleInputPassword2" placeholder="Password">
-                            @error('password')
-                                <div class="alert alert-danger">{{ $message }}</div>
-                            @enderror
-                          </div>
-                          <div class="form-group">
-                            <label for="inputNoTelephone2">No Telepon</label>
-                            <input type="text" class="form-control" name="no_telephone" id="inputNoTelephone2" placeholder="No Telepon">
-                          </div>
-                          <div class="form-group">
-                            <label for="inputLokasi2">Alamat</label>
-                            <input type="text" class="form-control" name="location" id="inputLokasi2" placeholder="Alamat">
-                          </div>
-                          <div class="form-group">
-                            <label for="exampleInputFile2">Profile Picture</label>
-                            <div class="input-group">
-                              <div class="custom-file">
-                                <input type="file" class="custom-file-input" name="profile_picture" id="exampleInputFile2">
-                                <label class="custom-file-label" for="exampleInputFile2">Choose file</label>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <!-- /.card-body -->
-                    
-                        <!-- /.card -->
-                        <div class="modal-footer justify-content-between">
-                          <button type="button" class="btn btn-outline-light" data-dismiss="modal">Close</button>
-                          <button type="submit" class="btn btn-outline-light">Simpan Perubahan</button>
-                        </div>
-                      </form>
-                  </div>
-
-              </div>
-              <!-- /.modal-content -->
-            </div>
-            <!-- /.modal-dialog -->
-          </div>
-          <!-- /.modal -->
-      </div>
-    </section>
-  <!-- /.content -->
 @endsection
 
 @section('javascripts')
@@ -382,28 +413,13 @@
   </script>
 
   <script>
-      // $(function() {
-      //   console.log('ajax');
-          // $('.simpan-perubahan').on('click', function() {
-          //   console.log("Simpan Perubahan");
-          //   $.ajax({
-          //     url: {{ route('update.nasabah') }},
-          //     data: data,
-          //     type: 'put',
-          //     dataType: 'json',
-          //     succes: function(data) {
-          //       $('#inputName2').val(data.name);
-          //       $('#exampleInputEmail2').val(data.email);
-          //       $('#inputNoTelephone2').val(data.no_telephone);
-          //       $('#inputLokasi2').val(data.location);
-          //     }
-          //     error: function(data) {
-          //       var errors = data.responseJSON;
-          //       console.log(errors);
-          //     }
-          //   });
-          // });
-        // });
+    $('#close-tambah').on('click', function () {
+      $("#modal-primary").find('.is-invalid').removeClass("is-invalid");
+      $("#modal-primary").find('.is-valid').removeClass("is-valid");
+      $("#modal-primary").find('.invalid-feedback').remove();
+      $("#modal-primary").find('.valid-feedback').remove();
+      $("#modal-primary").find('.error-message').remove();
+  });
   </script>
 
   <script>
@@ -418,7 +434,7 @@
 
 <script>
   $(document).ready( function () {
-
+   
     // Below codes are in different js file
     $.extend( $.fn.dataTable.ext.buttons.pdfHtml5, {
       

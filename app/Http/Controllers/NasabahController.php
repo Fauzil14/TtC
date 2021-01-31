@@ -8,6 +8,7 @@ use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Hash;
+use RealRashid\SweetAlert\Facades\Alert;
 use Illuminate\Support\Facades\Validator;
 
 class NasabahController extends Controller
@@ -35,11 +36,11 @@ class NasabahController extends Controller
     public function tambahNasabah(Request $request, Client $client) 
     {
 
-        $validatedData = $request->validate([
+        $validatedData = $request->validateWithBag('tambah', [
             'name'            => [ 'required' ,'string'],
             'email'           => [ 'required' ,'email', Rule::unique('users')],
             'password'        => [ 'required', 'min:6' ],
-            'no_telephone'    => [ Rule::unique('users') ],
+            'no_telephone'    => [ 'required', Rule::unique('users') ],
             'location'        => [ 'required' ],
             'profile_picture' => [ 'image', 'max:2048', 'mimes:jpg,jpeg,png' ],
         ]);
@@ -74,29 +75,22 @@ class NasabahController extends Controller
         $nasabahRole = Role::firstWhere('name', 'nasabah');
         $user->roles()->attach($nasabahRole);
         
+        Alert::success('Berhasil', 'Nasabah baru berhasil ditambahkan');
         return back();
     }
 
     public function updateNasabah(Request $request, Client $client)
     {
-        dd($request->all());
         $user = User::findOrFail($request->user_id);
-        Validator::make($request->all(), [
+        
+        $validatedData = $request->validateWithBag('edit', [
             'name'            => [ 'required' ,'string'],
             'email'           => [ 'required' ,'email', Rule::unique('users')->ignore($user->id)],
             'password'        => [ 'min:6' ],
             'no_telephone'    => [ Rule::unique('users')->ignore($user->id) ],
-            'location'        => [ 'required' ],
+            'location'        => [ 'nullable' ],
             'profile_picture' => [ 'image', 'max:2048', 'mimes:jpg,jpeg,png' ],
-        ])->validate();
-
-        // if($validator->fails()) {
-        //     return "<script>alert( '" . $validator->errors() . "' )</script>";
-        // }
-
-        // $validatedData = $request->validated();
-        
-        // dd($validatedData);
+        ]);
 
         if(!empty($validatedData['profile_picture'])) {
             $image = base64_encode(file_get_contents($validatedData['profile_picture']));
@@ -117,8 +111,6 @@ class NasabahController extends Controller
         } else {
             $pp = $user->profile_picture;
         }
-
-        dd($validatedData);
 
         return back();
     }
