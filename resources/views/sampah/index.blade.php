@@ -20,6 +20,18 @@
 @endsection
 
 @section('content')
+
+@php
+ 
+  if( $errors->tambah->any() ) {
+    alert()->error('Gagal', 'Gagal menambahkan sampah baru');
+  }
+  if( $erros->edit->any() ) {
+    alert()->error('Gagal', 'Gagal update data sampah');
+  }
+
+@endphp
+
 <!-- Content Header (Page header) -->
 <div class="content-header">
     <div class="container-fluid">
