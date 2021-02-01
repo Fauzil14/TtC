@@ -219,33 +219,33 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="{{ route('nasabah') }}" class="nav-link">
+                <a href="{{ route('user.nasabah') }}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Nasabah</p>
                 </a>
               </li>
             @can('admin')  
               <li class="nav-item">
-                <a href="./index2.html" class="nav-link">
+                <a href="{{ route('user.pengurus-satu') }}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Pengurus Satu</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="./index3.html" class="nav-link">
+                <a href="{{ route('user.pengurus-dua') }}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Pengurus Dua</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="./index3.html" class="nav-link">
+                <a href="{{ route('user.bendahara') }}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Bendahara</p>
                 </a>
               </li>
             @endcan  
               <li class="nav-item">
-                <a href="./index3.html" class="nav-link">
+                <a href="{{ route('sampah') }}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Sampah</p>
                 </a>

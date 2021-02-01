@@ -11,21 +11,51 @@ use Illuminate\Support\Facades\Hash;
 use RealRashid\SweetAlert\Facades\Alert;
 use Illuminate\Support\Facades\Validator;
 
-class NasabahController extends Controller
+class UserController extends Controller
 {
     
-    public function index(User $user)
+    public function indexNasabah(User $user)
     {
         $nasabahs = $user->whoHasRole('nasabah')->get();
         
-        return view('nasabah.index')->with(compact('nasabahs'));
+        return view('user.nasabah.index')->with(compact('nasabahs'));
+    }
+    
+    public function indexPengurusSatu(User $user)
+    {
+        $pengurus_satus = $user->whoHasRole('pengurus-satu')->get();
+        
+        return view('user.pengurus-satu.index')->with(compact('pengurus_satus'));
+    }
+
+    public function indexPengurusDua(User $user)
+    {
+        $pengurus_duas = $user->whoHasRole('pengurus-dua')->get();
+        
+        return view('user.pengurus-dua.index')->with(compact('pengurus_duas'));
+    }
+    
+    public function indexBendahara(User $user)
+    {
+        $bendaharas = $user->whoHasRole('bendahara')->get();
+        
+        return view('user.bendahara.index')->with(compact('bendaharas'));
     }
 
     public function delete($user_id)
     {
-        User::findOrFail($user_id)->delete();
 
-        return back();
+        $user = User::findOrFail($user_id);
+        $role = $user->roles()->first()->name;
+        
+        try {
+            $user->delete();
+    
+            Alert::success('Berhasil', 'Data ' . $role . ' berhasil di hapus');
+            return back();
+        } catch(\Throwable $e) {
+            Alert::error('Gagal', 'Data ' . $role . ' gagal di hapus');
+        }
     }
 
     public function show($user_id)
@@ -33,7 +63,7 @@ class NasabahController extends Controller
         User::findOrFail($user_id);
     }
 
-    public function tambahNasabah(Request $request, Client $client) 
+    public function tambahUser(Request $request, Client $client) 
     {
 
         $validatedData = $request->validateWithBag('tambah', [
@@ -72,24 +102,25 @@ class NasabahController extends Controller
             'profile_picture' => $pp,
         ]);
 
-        $nasabahRole = Role::firstWhere('name', 'nasabah');
-        $user->roles()->attach($nasabahRole);
+        $userRole = Role::firstWhere('name', $request->user_role);
+        $user->roles()->attach($userRole);
         
-        Alert::success('Berhasil', 'Nasabah baru berhasil ditambahkan');
+        Alert::success('Berhasil', ucfirst($request->user_role) . ' baru berhasil ditambahkan');
         return back();
     }
 
-    public function updateNasabah(Request $request, Client $client)
+    public function updateUser(Request $request, Client $client)
     {
+        
         $user = User::findOrFail($request->user_id);
         
         $validatedData = $request->validateWithBag('edit', [
-            'name'            => [ 'required' ,'string'],
-            'email'           => [ 'required' ,'email', Rule::unique('users')->ignore($user->id)],
-            'password'        => [ 'min:6' ],
-            'no_telephone'    => [ Rule::unique('users')->ignore($user->id) ],
+            'name'            => [ 'nullable', 'string'],
+            'email'           => [ 'nullable', 'email', Rule::unique('users')->ignore($user->id)],
+            'password'        => [ 'nullable', 'min:6' ],
+            'no_telephone'    => [ 'nullable', Rule::unique('users')->ignore($user->id) ],
             'location'        => [ 'nullable' ],
-            'profile_picture' => [ 'image', 'max:2048', 'mimes:jpg,jpeg,png' ],
+            'profile_picture' => [ 'nullable', 'image', 'max:2048', 'mimes:jpg,jpeg,png' ],
         ]);
 
         if(!empty($validatedData['profile_picture'])) {
@@ -112,6 +143,23 @@ class NasabahController extends Controller
             $pp = $user->profile_picture;
         }
 
+        $input = collect($validatedData)->filter(function($value, $key) {
+            return $value != null;
+        });
+
+        $input = $input->map(function($value, $key) use($pp) {
+            if ( $key == 'password' ) {
+                $value = Hash::make($value);
+            }
+            if( $key == 'profile_picture') {
+                $value = $pp;
+            }
+            return $value;
+        });
+
+        $user->update($input->toArray());
+
+        Alert::success('Berhasil', 'Data ' . $user->roles()->first()->name . ' berhasil di update');
         return back();
     }
 }

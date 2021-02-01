@@ -24,8 +24,19 @@ Route::get('/home', 'HomeController@index')->middleware('verified')->name('home'
 
 Route::prefix('dashboard')->middleware(['verified', 'can:management-web'])->group(function() {
     Route::get('/', 'HomeController@dashboard')->name('dashboard');
-    Route::get('/nasabah', 'NasabahController@index')->name('nasabah');
-    Route::post('/nasabah/tambah', 'NasabahController@tambahNasabah')->middleware('can:admin')->name('tambah.nasabah');
-    Route::put('/nasabah/update', 'NasabahController@updateNasabah')->middleware('can:admin')->name('update.nasabah');
-    Route::get('/nasabah/delete/{user_id}', 'NasabahController@delete')->middleware('can:admin')->name('delete.nasabah');
+    
+    // User
+    Route::get('/user/nasabah', 'UserController@indexNasabah')->name('user.nasabah');
+    Route::get('/user/pengurus-satu', 'UserController@indexPengurusSatu')->name('user.pengurus-satu');
+    Route::get('/user/pengurus-dua', 'UserController@indexPengurusDua')->name('user.pengurus-dua');
+    Route::get('/user/bendahara', 'UserController@indexBendahara')->name('user.bendahara');
+    Route::post('/user/tambah', 'UserController@tambahUser')->middleware('can:admin')->name('tambah.user');
+    Route::put('/user/update', 'UserController@updateUser')->middleware('can:admin')->name('update.user');
+    Route::get('/user/delete/{user_id}', 'UserController@delete')->middleware('can:admin')->name('delete.user');
+
+
+    // Sampah
+    Route::get('/sampah', 'SampahController@indexSampah')->name('sampah');
+    Route::post('/sampah/tambah', 'SampahController@tambahSampah')->name('tambah.sampah');
+
 });

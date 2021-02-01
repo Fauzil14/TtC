@@ -24,10 +24,10 @@
 @php
 
   if( $errors->tambah->any() ) {
-    alert()->error('Gagal', 'Gagal menambahkan nasabah baru');
+    alert()->error('Gagal', 'Gagal menambahkan pengurus dua baru');
   }
   if( $errors->edit->any() ) {
-    alert()->error('Gagal', 'Gagal mengupdate data nasabah');
+    alert()->error('Gagal', 'Gagal mengupdate data pengurus dua');
   }
 
 @endphp
@@ -37,12 +37,12 @@
     <div class="container-fluid">
       <div class="row mb-2">
         <div class="col-sm-6">
-          <h1 class="m-0">Dashboard Nasabah</h1>
+          <h1 class="m-0">Dashboard Pengurus Dua</h1>
         </div><!-- /.col -->
         <div class="col-sm-6">
           <ol class="breadcrumb float-sm-right">
             <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-            <li class="breadcrumb-item active">Data Nasabah</li>
+            <li class="breadcrumb-item active">Data Pengurus Dua</li>
           </ol>
         </div><!-- /.col -->
       </div><!-- /.row -->
@@ -89,9 +89,9 @@
           <!-- small box -->
           <div class="small-box bg-warning">
             <div class="inner">
-              <h3>{{ $nasabahs->count() }}</h3>
+              <h3>{{ $pengurus_duas->count() }}</h3>
 
-              <p>Nasabah Terdaftar</p>
+              <p>Pengurus Dua Terdaftar</p>
             </div>
             <div class="icon">
               <i class="ion ion-person-add"></i>
@@ -120,11 +120,11 @@
 
           <div class="card">
             <div class="card-header">
-              <h3 class="card-title">Daftar Nasabah</h3>
+              <h3 class="card-title">Daftar Pengurus Dua</h3>
               @can('admin')
                 <div class="d-flex justify-content-end">
                   <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-primary">
-                    <i class="material-icons" style="font-size:14px">person_add</i> Tambah User
+                    <i class="material-icons" style="font-size:14px">person_add</i> Tambah Pengurus Dua
                   </button>
                 </div>
               @endcan
@@ -137,6 +137,7 @@
                 <thead>
                 <tr>
                   <th>No</th>
+                  <th>ID</th>
                   <th>Nama</th>
                   <th>Email</th>
                   <th>No Telepon</th>
@@ -146,15 +147,16 @@
                 </tr>
                 </thead>
                 <tbody>
-                @php $i = 0 @endphp
-                @foreach($nasabahs as $nasabah)
+                @php $i = 1 @endphp
+                @foreach($pengurus_duas as $pengurus_dua)
                   <tr>
                     <td>{{ $i++ }}</td>
-                    <td>{{ $nasabah->name }}</td>
-                    <td>{{ $nasabah->email }}</td>
-                    <td>{{ $nasabah->no_telephone }}</td>
-                    <td>{{ $nasabah->location }}</td>
-                    <td>{{ $nasabah->created_at->translatedFormat('d/m/Y H:i') }}</td>
+                    <td>{{ $pengurus_dua->id }}</td>
+                    <td>{{ $pengurus_dua->name }}</td>
+                    <td>{{ $pengurus_dua->email }}</td>
+                    <td>{{ $pengurus_dua->no_telephone }}</td>
+                    <td>{{ $pengurus_dua->location }}</td>
+                    <td>{{ $pengurus_dua->created_at->translatedFormat('d/m/Y H:i') }}</td>
                     <td class="text-right py-0 align-middle">
                       <div class="btn-group btn-group-sm">
                         <a href="#" class="btn btn-info"><i class="fas fa-eye"></i></a>
@@ -162,16 +164,16 @@
                           <a href="#"
                              data-toggle="modal" 
                              data-target="#modal-success" 
-                             data-id="{{ $nasabah->id }}" 
-                             data-name="{{ $nasabah->name }}" 
-                             data-email="{{ $nasabah->email }}" 
-                             data-no_telephone="{{ $nasabah->no_telephone }}"
-                             data-location="{{ $nasabah->location }}"
-                             data-profile_picture="{{ $nasabah->profile_picture }}"
+                             data-id="{{ $pengurus_dua->id }}" 
+                             data-name="{{ $pengurus_dua->name }}" 
+                             data-email="{{ $pengurus_dua->email }}" 
+                             data-no_telephone="{{ $pengurus_dua->no_telephone }}"
+                             data-location="{{ $pengurus_dua->location }}"
+                             data-profile_picture="{{ $pengurus_dua->profile_picture }}"
                              class="btn btn-success">
                              <i class="fas fa-edit"></i>
                           </a>
-                          <a href="{{ route('delete.nasabah', [ 'user_id' => $nasabah->id ]) }}" class="btn btn-danger"><i class="fas fa-trash"></i></a>
+                          <a href="{{ route('delete.user', [ 'user_id' => $pengurus_dua->id ]) }}" class="btn btn-danger"><i class="fas fa-trash"></i></a>
                         @endcan
                       </div>
                     </td>
@@ -182,6 +184,7 @@
                 <tfoot>
                 <tr>
                   <th>No</th>
+                  <th>ID</th>
                   <th>Nama</th>
                   <th>Email</th>
                   <th>No Telepon</th>
@@ -200,7 +203,7 @@
             <div class="modal-dialog">
               <div class="modal-content bg-primary">
                 <div class="modal-header">
-                  <h4 class="modal-title">Tambah Nasabah</h4>
+                  <h4 class="modal-title">Tambah Pengurus Dua</h4>
                   <button type="button" class="close close-tambah" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                   </button>
@@ -209,8 +212,11 @@
                       <!-- Main content -->
                       
                       <!-- form start -->
-                      <form method="POST" action="{{ route('tambah.nasabah') }}" enctype="multipart/form-data">
+                      <form method="POST" action="{{ route('tambah.user') }}" enctype="multipart/form-data">
                         @csrf
+
+                        <input type="hidden" name="user_role" value="pengurus-dua">
+
                         <div class="card-body">
                           <div class="form-group">
                             <label for="inputName">Nama</label>
@@ -228,7 +234,7 @@
                           </div>
                           <div class="form-group">
                             <label for="exampleInputPassword1">Password</label>
-                            <input type="password" class="form-control @error('password', 'tambah') is-invalid @enderror" name="password" id="exampleInputPassword1" placeholder="Password">
+                            <input type="text" class="form-control @error('password', 'tambah') is-invalid @enderror" name="password" id="exampleInputPassword1" placeholder="Password">
                             @error('password', 'tambah')
                               <strong class="error-message" style="color: hsl(218, 77%, 88%);">{{ $message }}</strong>
                             @enderror
@@ -285,7 +291,7 @@
       <div class="modal-dialog">
         <div class="modal-content bg-success">
           <div class="modal-header">
-            <h4 class="modal-title">Update Nasabah</h4>
+            <h4 class="modal-title">Update Pengurus Dua</h4>
             <button type="button" class="close close-update" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">×</span>
             </button>
@@ -295,7 +301,7 @@
                   <!-- Main content -->
 
               <!-- form start -->
-              <form method="POST" action="{{ route('update.nasabah') }}" enctype="multipart/form-data">
+              <form method="POST" action="{{ route('update.user') }}" enctype="multipart/form-data">
               @csrf
               @method('PUT')
 
