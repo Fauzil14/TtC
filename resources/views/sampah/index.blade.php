@@ -22,11 +22,13 @@
 @section('content')
 
 @php
- 
+  
+
   if( $errors->tambah->any() ) {
+    dd($errors);
     alert()->error('Gagal', 'Gagal menambahkan sampah baru');
   }
-  if( $erros->edit->any() ) {
+  if( $errors->edit->any() ) {
     alert()->error('Gagal', 'Gagal update data sampah');
   }
 

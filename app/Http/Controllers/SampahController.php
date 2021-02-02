@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\GolonganSampah;
+use App\Gudang;
 use App\Sampah;
+use App\GolonganSampah;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
 use App\Http\Resources\SampahResource;
 use RealRashid\SweetAlert\Facades\Alert;
 
@@ -43,21 +45,35 @@ class SampahController extends Controller
     {
 
         $validatedData = $request->validateWithBag('tambah', [
-            'golongan_id'     => [ 'required' ],
-            'jenis_sampah'    => [ 'required' ,'jenis_sampah'],
-            'stok'            => [ 'required' ],
-            'harga'           => [ 'required' ],
-        ]);
-      
-        Sampah::create([
-            'golongan_sampah_id' => $validatedData['golongan_id'],
-            'jenis_sampah' => $validatedData['jenis_sampah'],
-            'stok' => $validatedData['stok'],
-            'harga_perkilogram' => $validatedData['harga'],
+            'golongan_id'     => [ 'required', 'exists:golongan_sampahs,id' ],
+            'jenis_sampah'    => [ 'required' ],
+            'stok'            => [ 'required', 'numeric', 'gte:5' ],
+            'harga'           => [ 'required', 'numeric', 'gte:300' ],
         ]);
         
-        Alert::success('Berhasil', 'Sampah baru berhasil ditambahkan');
-        return back();
+        try {
+            DB::beginTransaction();
+            $sampah = Sampah::create([
+                'golongan_sampah_id' => $validatedData['golongan_id'],
+                'jenis_sampah' => $validatedData['jenis_sampah'],
+                'harga_perkilogram' => $validatedData['harga'],
+            ]);
+            
+            $sampah->gudang()->create([ 'total_berat' => $validatedData['stok'] ]);
+            
+            DB::commit();
+
+            Alert::success('Berhasil', 'Sampah baru berhasil ditambahkan');
+            return back();
+        } catch(\Throwable $e) {
+            report($e);
+            DB::rollback();
+
+            Alert::error('Gagal', 'Gagal input data ke database');
+            return back();
+        }
+    
+    
     }
 
     public function updateSampah(Request $request)
@@ -67,7 +83,7 @@ class SampahController extends Controller
 
         $validatedData = $request->validateWithBag('tambah', [
             'golongan_id'     => [ 'required' ],
-            'jenis_sampah'    => [ 'required' ,'jenis_sampah'],
+            'jenis_sampah'    => [ 'required' ],
             'stok'            => [ 'required' ],
             'harga'           => [ 'required' ],
         ]);
