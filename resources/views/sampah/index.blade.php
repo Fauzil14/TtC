@@ -165,15 +165,14 @@
                              data-toggle="modal" 
                              data-target="#modal-success" 
                              data-id="{{ $sampah->id }}" 
-                             data-name="{{ $sampah->name }}" 
-                             data-email="{{ $sampah->email }}" 
-                             data-no_telephone="{{ $sampah->no_telephone }}"
-                             data-location="{{ $sampah->location }}"
-                             data-profile_picture="{{ $sampah->profile_picture }}"
+                             data-golongan_id="{{ $sampah->golonganSampah->id }}" 
+                             data-jenis_sampah="{{ $sampah->jenis_sampah }}" 
+                             data-stok="{{ $sampah->gudang->total_berat }}"
+                             data-harga_perkilogram="{{ $sampah->harga_perkilogram }}"
                              class="btn btn-success">
                              <i class="fas fa-edit"></i>
                           </a>
-                          <a href="{{ route('delete.user', [ 'user_id' => $sampah->id ]) }}" class="btn btn-danger"><i class="fas fa-trash"></i></a>
+                          <a href="{{ route('delete.sampah', [ 'sampah_id' => $sampah->id ]) }}" class="btn btn-danger"><i class="fas fa-trash"></i></a>
                         @endcan
                       </div>
                     </td>
@@ -232,8 +231,8 @@
                           </div>
                           <div class="form-group">
                             <label for="jumlahStok">Stok(kg)</label>
-                            <input type="number" class="form-control @error('sampah', 'tambah') is-invalid @enderror" name="stok" id="jumlahStok" min="5" placeholder="Stok">
-                            @error('sampah', 'tambah')
+                            <input type="number" class="form-control @error('stok', 'tambah') is-invalid @enderror" name="stok" id="jumlahStok" min="5" placeholder="Stok">
+                            @error('stok', 'tambah')
                               <strong class="error-message" style="color: hsl(218, 77%, 88%);">{{ $message }}</strong>
                             @enderror
                           </div>
@@ -271,7 +270,7 @@
         <div class="modal-content bg-success">
           <div class="modal-header">
             <h4 class="modal-title">Update Sampah</h4>
-            <button type="button" class="close close-update" data-dismiss="modal" aria-label="Close">
+            <button type="button" class="close updateupdate" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">×</span>
             </button>
           </div>
@@ -279,74 +278,50 @@
           <div class="modal-body">
                   <!-- Main content -->
 
-              <!-- form start -->
-              <form method="POST" action="{{ route('update.user') }}" enctype="multipart/form-data">
-              @csrf
-              @method('PUT')
+                  <!-- form start -->
+                  <form method="POST" action="{{ route('update.sampah') }}" enctype="multipart/form-data">
+                    @csrf
 
-                <div class="modal-body">
-                    <div class="text-center">
-                      <img src="" id="profile-picture" class="user elevation-2" alt="User Image">
-                    </div>
-                
-                    <input type="hidden" id="user_id" name="user_id">
+                    <input type="hidden" name="sampah_id" id="sampah_id">
+
                     <div class="card-body">
                       <div class="form-group">
-                        <label for="inputName2">Nama</label>
-                        <input type="text" class="form-control @error('name', 'edit') is-invalid @enderror" name="name" id="inputName2" placeholder="Masukkan nama">
-                        @error('name', 'edit')
+                          <label>Golongan</label>
+                          <select class="custom-select" id="golongan_id" name="golongan_id">
+                            @foreach($golongans as $golongan)    
+                                <option value="{{ $golongan->id }}">{{ $golongan->golongan }}</option>
+                            @endforeach
+                          </select>
+                      </div>
+                      <div class="form-group">
+                        <label for="jenisSampah">Jenis Sampah</label>
+                        <input type="text" class="form-control @error('jenis_sampah', 'edit') is-invalid @enderror" name="jenis_sampah" id="jenisSampah" placeholder="Masukkan jenis sampah">
+                        @error('jenis_sampah', 'edit')
                           <strong class="error-message" style="color: hsl(218, 77%, 88%);">{{ $message }}</strong>
                         @enderror
                       </div>
                       <div class="form-group">
-                        <label for="exampleInputEmail2">Alamat Email</label>
-                        <input type="email" class="form-control @error('email', 'edit') is-invalid @enderror" name="email" id="exampleInputEmail2" placeholder="Masukkan email">
-                        @error('email', 'edit')
+                        <label for="jumlahStok">Stok(kg)</label>
+                        <input type="number" class="form-control @error('stok', 'edit') is-invalid @enderror" name="stok" id="jumlahStok" min="5" placeholder="Stok">
+                        @error('stok', 'edit')
                           <strong class="error-message" style="color: hsl(218, 77%, 88%);">{{ $message }}</strong>
                         @enderror
                       </div>
                       <div class="form-group">
-                        <label for="exampleInputPassword2">Password</label>
-                        <input type="text" class="form-control @error('password', 'edit') is-invalid @enderror" name="password" id="exampleInputPassword2" placeholder="Password">
-                        @error('password', 'edit')
+                        <label for="harga">Harga(Rp. /kg)</label>
+                        <input type="number" class="form-control @error('harga', 'edit') is-invalid @enderror" name="harga" id="harga" min="300" placeholder="Harga">
+                        @error('harga', 'edit')
                           <strong class="error-message" style="color: hsl(218, 77%, 88%);">{{ $message }}</strong>
                         @enderror
-                      </div>
-                      <div class="form-group">
-                        <label for="inputNoTelephone2">No Telepon</label>
-                        <input type="text" class="form-control @error('no_telephone', 'edit') is-invalid @enderror" name="no_telephone" id="inputNoTelephone2" placeholder="No Telepon">
-                        @error('no_telephone', 'edit')
-                          <strong class="error-message" style="color: hsl(218, 77%, 88%);">{{ $message }}</strong>
-                        @enderror
-                      </div>
-                      <div class="form-group">
-                        <label for="inputLokasi2">Alamat</label>
-                        <input type="text" class="form-control @error('location', 'edit') is-invalid @enderror" name="location" id="inputLokasi2" placeholder="Alamat">
-                        @error('location', 'edit')
-                          <strong class="error-message" style="color: hsl(218, 77%, 88%);">{{ $message }}</strong>
-                        @enderror
-                      </div>
-                      <div class="form-group">
-                        <label for="exampleInputFile2">Profile Picture</label>
-                        <div class="input-group">
-                          <div class="custom-file">
-                            <input type="file" class="custom-file-input" name="profile_picture" id="exampleInputFile2">
-                            <label class="custom-file-label @error('profile_picture', 'edit') is-invalid @enderror" for="exampleInputFile2">Choose file</label>
-                            @error('location', 'edit')
-                              <strong class="error-message" style="color: hsl(218, 77%, 88%);">{{ $message }}</strong>
-                            @enderror  
-                          </div>
-                        </div>
                       </div>
                     </div>
                     <!-- /.card-body -->
-                
-                    <!-- /.card -->
-                    <div class="modal-footer justify-content-between">
-                      <button type="button" class="btn btn-outline-light close-update" data-dismiss="modal">Close</button>
-                      <button type="submit" class="edit btn btn-outline-light">Simpan Perubahan</button>
-                    </div>
-                  </form>
+                  
+                <!-- /.card -->
+                <div class="modal-footer justify-content-between">
+                  <button type="button" class="btn btn-outline-light close-update" data-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-outline-light">Simpan</button>
+                </form>
               </div>
 
           </div>
@@ -378,26 +353,24 @@
   
   <script>
       $('#modal-success').on('show.bs.modal', function(event) {
-        var link            = $(event.relatedTarget);
-        var modal           = $(this);
-        var id              = link.data("id");
-        var name            = link.data("name");
-        var email           = link.data("email");
-        var no_telephone    = link.data("no_telephone");
-        var location        = link.data("location");
-        var profile_picture = link.data("profile_picture");
+        var link                 = $(event.relatedTarget);
+        var modal                = $(this);
+        var id                   = link.data("id");
+        var golongan_id          = link.data("golongan_id");
+        var jenis_sampah         = link.data("jenis_sampah");
+        var stok                 = link.data("stok");
+        var harga_perkilogram    = link.data("harga_perkilogram");
         
-        modal.find('.modal-body #user_id').val(id);
-        modal.find('.modal-body #inputName2').val(name);
-        modal.find('.modal-body #exampleInputEmail2').val(email);
-        modal.find('.modal-body #inputNoTelephone2').val(no_telephone);
-        modal.find('.modal-body #inputLokasi2').val(location);
-        $('#profile-picture').attr("src",profile_picture);
+        modal.find('.modal-body #sampah_id').val(id);
+        modal.find('.modal-body #golongan_id').val(golongan_id);
+        modal.find('.modal-body #jenisSampah').val(jenis_sampah);
+        modal.find('.modal-body #jumlahStok').val(stok);
+        modal.find('.modal-body #harga').val(harga_perkilogram);
       });
   </script>
 
   <script>
-    $('.close-tambah').on('click', function () {
+    $('.close-update').on('click', function () {
       $("#modal-primary").find('.is-invalid').removeClass("is-invalid");
       $("#modal-primary").find('.is-valid').removeClass("is-valid");
       $("#modal-primary").find('.invalid-feedback').remove();

@@ -78,53 +78,39 @@ class SampahController extends Controller
 
     public function updateSampah(Request $request)
     {
-        
+
         $sampah = Sampah::findOrFail($request->sampah_id);
 
-        $validatedData = $request->validateWithBag('tambah', [
-            'golongan_id'     => [ 'required' ],
+        $validatedData = $request->validateWithBag('edit', [
+            'golongan_id'     => [ 'required', 'exists:golongan_sampahs,id' ],
             'jenis_sampah'    => [ 'required' ],
-            'stok'            => [ 'required' ],
-            'harga'           => [ 'required' ],
+            'stok'            => [ 'required', 'numeric', 'gte:5' ],
+            'harga'           => [ 'required', 'numeric', 'gte:300' ],
         ]);
       
-        Sampah::create([
-            'golongan_sampah_id' => $validatedData['golongan_id'],
-            'jenis_sampah' => $validatedData['jenis_sampah'],
-            'stok' => $validatedData['stok'],
-            'harga_perkilogram' => $validatedData['harga'],
-        ]);
-        
-        Alert::success('Berhasil', 'Sampah baru berhasil ditambahkan');
-        return back();
+        try {
+            
+            DB::beginTransaction();
+            
+            $sampah->gudang()->update(['total_berat' => $validatedData['stok']]);
+            
+            $sampah->update([
+                'golongan_sampah_id' => $validatedData['golongan_id'],
+                'jenis_sampah' => $validatedData['jenis_sampah'],
+                'harga_perkilogram' => $validatedData['harga'],
+            ]);
 
-        $validatedData = $request->validateWithBag('edit', [
-            'name'            => [ 'nullable', 'string'],
-            'email'           => [ 'nullable', 'email', Rule::unique('users')->ignore($user->id)],
-            'password'        => [ 'nullable', 'min:6' ],
-            'no_telephone'    => [ 'nullable', Rule::unique('users')->ignore($user->id) ],
-            'location'        => [ 'nullable' ],
-            'profile_picture' => [ 'nullable', 'image', 'max:2048', 'mimes:jpg,jpeg,png' ],
-        ]);
+            DB::commit();    
 
+            Alert::success('Berhasil', 'Data sampah berhasil di update');
+            return back();
 
-        $input = collect($validatedData)->filter(function($value, $key) {
-            return $value != null;
-        });
+        } catch(\Throwable $e) {
+            report($e);
+            DB::rollback();
 
-        $input = $input->map(function($value, $key) use($pp) {
-            if ( $key == 'password' ) {
-                $value = Hash::make($value);
-            }
-            if( $key == 'profile_picture') {
-                $value = $pp;
-            }
-            return $value;
-        });
-
-        $user->update($input->toArray());
-
-        Alert::success('Berhasil', 'Data sampah berhasil di update');
-        return back();
+            Alert::error('Gagal', 'Gagal update data sampah');
+            return back();
+        }
     }
 }

@@ -38,5 +38,7 @@ Route::prefix('dashboard')->middleware(['verified', 'can:management-web'])->grou
     // Sampah
     Route::get('/sampah', 'SampahController@indexSampah')->name('sampah');
     Route::post('/sampah/tambah', 'SampahController@tambahSampah')->name('tambah.sampah');
+    Route::post('/sampah/update', 'SampahController@updateSampah')->name('update.sampah');
+    Route::get('/sampah/delete/{sampah_id}', 'SampahController@delete')->name('delete.sampah');
 
 });
