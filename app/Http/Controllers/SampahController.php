@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Bank;
 use App\Gudang;
 use App\Sampah;
 use App\GolonganSampah;
@@ -17,8 +18,9 @@ class SampahController extends Controller
     {
         $sampahs   = Sampah::with(['gudang', 'golonganSampah'])->get();
         $golongans = GolonganSampah::get();
+        $bank = Bank::first();
 
-        return view('sampah.index')->with(compact('sampahs', 'golongans'));
+        return view('sampah.index')->with(compact('sampahs', 'golongans', 'bank'));
     }
 
     public function delete($sampah_id)
@@ -72,8 +74,6 @@ class SampahController extends Controller
             Alert::error('Gagal', 'Gagal input data ke database');
             return back();
         }
-    
-    
     }
 
     public function updateSampah(Request $request)

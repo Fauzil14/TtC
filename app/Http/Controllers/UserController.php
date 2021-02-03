@@ -14,32 +14,20 @@ use Illuminate\Support\Facades\Validator;
 class UserController extends Controller
 {
     
-    public function indexNasabah(User $user)
+    public function indexUser($role, User $user)
     {
-        $nasabahs = $user->whoHasRole('nasabah')->get();
-        
-        return view('user.nasabah.index')->with(compact('nasabahs'));
-    }
-    
-    public function indexPengurusSatu(User $user)
-    {
-        $pengurus_satus = $user->whoHasRole('pengurus-satu')->get();
-        
-        return view('user.pengurus-satu.index')->with(compact('pengurus_satus'));
-    }
+        ${$role} = $user->whoHasRole("{$role}")->get();
 
-    public function indexPengurusDua(User $user)
-    {
-        $pengurus_duas = $user->whoHasRole('pengurus-dua')->get();
-        
-        return view('user.pengurus-dua.index')->with(compact('pengurus_duas'));
-    }
-    
-    public function indexBendahara(User $user)
-    {
-        $bendaharas = $user->whoHasRole('bendahara')->get();
-        
-        return view('user.bendahara.index')->with(compact('bendaharas'));
+        switch ($role) {
+            case $role == 'pengurus-satu' :
+                return view("user.{$role}.index")->with(["pengurus_satus" => ${$role}]);
+                break;
+            case $role == 'pengurus-dua' :
+                return view("user.{$role}.index")->with(["pengurus_duas" => ${$role}]);
+                break;
+            default :
+                return view("user.{$role}.index")->with(["{$role}s" => ${$role}]);
+        }
     }
 
     public function delete($user_id)

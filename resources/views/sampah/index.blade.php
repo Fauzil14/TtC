@@ -23,9 +23,7 @@
 
 @php
   
-
   if( $errors->tambah->any() ) {
-    dd($errors);
     alert()->error('Gagal', 'Gagal menambahkan sampah baru');
   }
   if( $errors->edit->any() ) {
@@ -61,12 +59,12 @@
           <!-- small box -->
           <div class="small-box bg-info">
             <div class="inner">
-              <h3>150</h3>
+              <h3>{{ $sampahs->count() }}</h3>
 
-              <p>New Orders</p>
+              <p>Sampah Terdaftar</p>
             </div>
             <div class="icon">
-              <i class="ion ion-bag"></i>
+              <i class="fas fa-clipboard-list"></i>
             </div>
             <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
           </div>
@@ -75,13 +73,14 @@
         <div class="col-lg-3 col-6">
           <!-- small box -->
           <div class="small-box bg-success">
-            <div class="inner">
-              <h3>53<sup style="font-size: 20px">%</sup></h3>
+            <div class="inner">              
+              <!-- $collection->pluck('relation_name') -->
+              <h3>{{ number_format($sampahs->pluck('gudang')->sum('total_berat'), 2, ',', ' ') }} <sub style="font-size: 20px">Kg</sub></h3>
 
-              <p>Bounce Rate</p>
+              <p>Stok Total Sampah</p>
             </div>
             <div class="icon">
-              <i class="ion ion-stats-bars"></i>
+              <i class="fas fa-warehouse"></i>
             </div>
             <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
           </div>
@@ -91,12 +90,12 @@
           <!-- small box -->
           <div class="small-box bg-warning">
             <div class="inner">
-              <h3>{{ $sampahs->count() }}</h3>
+              <h3>{{ number_format($bank->total_sampah_masuk, 2, ',', ' ') }} <sub style="font-size:20px">Kg</sub></h3>
 
-              <p>Sampah Terdaftar</p>
+              <p>Total Sampah Masuk</p>
             </div>
             <div class="icon">
-              <i class="ion ion-person-add"></i>
+              <i class="fas fa-angle-double-left"></i>
             </div>
             <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
           </div>
@@ -106,12 +105,12 @@
           <!-- small box -->
           <div class="small-box bg-danger">
             <div class="inner">
-              <h3>65</h3>
+              <h3>{{ number_format($bank->total_sampah_keluar, 2, ',', ' ') }} <sub style="font-size:20px">Kg</sub></h3>
 
-              <p>Unique Visitors</p>
+              <p>Total Sampah Keluar</p>
             </div>
             <div class="icon">
-              <i class="ion ion-pie-graph"></i>
+              <i class="fas fa-angle-double-right"></i>
             </div>
             <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
           </div>

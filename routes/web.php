@@ -26,10 +26,7 @@ Route::prefix('dashboard')->middleware(['verified', 'can:management-web'])->grou
     Route::get('/', 'HomeController@dashboard')->name('dashboard');
     
     // User
-    Route::get('/user/nasabah', 'UserController@indexNasabah')->name('user.nasabah');
-    Route::get('/user/pengurus-satu', 'UserController@indexPengurusSatu')->name('user.pengurus-satu');
-    Route::get('/user/pengurus-dua', 'UserController@indexPengurusDua')->name('user.pengurus-dua');
-    Route::get('/user/bendahara', 'UserController@indexBendahara')->name('user.bendahara');
+    Route::get('/user/index/{role}', 'UserController@indexUser')->name('user.index');
     Route::post('/user/tambah', 'UserController@tambahUser')->middleware('can:admin')->name('tambah.user');
     Route::put('/user/update', 'UserController@updateUser')->middleware('can:admin')->name('update.user');
     Route::get('/user/delete/{user_id}', 'UserController@delete')->middleware('can:admin')->name('delete.user');
@@ -41,4 +38,5 @@ Route::prefix('dashboard')->middleware(['verified', 'can:management-web'])->grou
     Route::post('/sampah/update', 'SampahController@updateSampah')->name('update.sampah');
     Route::get('/sampah/delete/{sampah_id}', 'SampahController@delete')->name('delete.sampah');
 
+    // Route::get('/profile', '')
 });
