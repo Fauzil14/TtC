@@ -8,6 +8,7 @@ use NumberFormatter;
 use Carbon\PHPStan\Macro;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\CssSelector\Parser\Handler\NumberHandler;
@@ -77,6 +78,19 @@ class AppServiceProvider extends ServiceProvider
             } else {
                 return number_format($value, 0, ',', '.');
             }
+        });
+
+        Route::macro('checkRoute', function($prefix, $params = null) {
+            $route = Route::current();
+            switch (TRUE) {
+                case $route->action['prefix'] == $prefix && is_null($params) : 
+                    return true;
+                case $route->action['prefix'] == $prefix && $route->parameters['role'] == $params :
+                    return true;
+                default : 
+                    return false;
+            }
+            
         });
 
     }

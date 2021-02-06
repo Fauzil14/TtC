@@ -26,17 +26,21 @@ Route::prefix('dashboard')->middleware(['verified', 'can:management-web'])->grou
     Route::get('/', 'HomeController@dashboard')->name('dashboard');
     
     // User
-    Route::get('/user/index/{role}', 'UserController@indexUser')->name('user.index');
-    Route::post('/user/tambah', 'UserController@tambahUser')->middleware('can:admin')->name('tambah.user');
-    Route::put('/user/update', 'UserController@updateUser')->middleware('can:admin')->name('update.user');
-    Route::get('/user/delete/{user_id}', 'UserController@delete')->middleware('can:admin')->name('delete.user');
+    Route::prefix('user')->group(function() {
+        Route::get('/index/{role}', 'UserController@indexUser')->name('user.index');
+        Route::post('/tambah', 'UserController@tambahUser')->middleware('can:admin')->name('tambah.user');
+        Route::put('/update', 'UserController@updateUser')->middleware('can:admin')->name('update.user');
+        Route::get('/delete/{user_id}', 'UserController@delete')->middleware('can:admin')->name('delete.user');
+    });
 
 
     // Sampah
-    Route::get('/sampah', 'SampahController@indexSampah')->name('sampah');
-    Route::post('/sampah/tambah', 'SampahController@tambahSampah')->name('tambah.sampah');
-    Route::post('/sampah/update', 'SampahController@updateSampah')->name('update.sampah');
-    Route::get('/sampah/delete/{sampah_id}', 'SampahController@delete')->name('delete.sampah');
+    Route::prefix('sampah')->group(function() {
+        Route::get('/', 'SampahController@indexSampah')->name('sampah');
+        Route::post('/tambah', 'SampahController@tambahSampah')->name('tambah.sampah');
+        Route::post('/update', 'SampahController@updateSampah')->name('update.sampah');
+        Route::get('/delete/{sampah_id}', 'SampahController@delete')->name('delete.sampah');
+    });
 
     Route::get('/profile/{user_id}', 'ProfileController@profileUser')->name('profile.user');
 });

@@ -41,7 +41,7 @@
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
 <div class="wrapper">
-
+  
   @include('sweetalert::alert')
 
   <!-- Navbar -->
@@ -219,33 +219,33 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="{{ route('user.index', 'nasabah') }}" class="nav-link">
+                <a href="{{ route('user.index', 'nasabah') }}" class="nav-link @if( Route::checkRoute('dashboard/user', 'nasabah') ) active @endif">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Nasabah</p>
                 </a>
               </li>
             @can('admin')  
               <li class="nav-item">
-                <a href="{{ route('user.index', 'pengurus-satu') }}" class="nav-link">
+                <a href="{{ route('user.index', 'pengurus-satu') }}" class="nav-link @if( Route::checkRoute('dashboard/user', 'pengurus-satu') ) active @endif">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Pengurus Satu</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="{{ route('user.index', 'pengurus-dua') }}" class="nav-link">
+                <a href="{{ route('user.index', 'pengurus-dua') }}" class="nav-link @if( Route::checkRoute('dashboard/user', 'pengurus-dua') ) active @endif">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Pengurus Dua</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="{{ route('user.index', 'bendahara') }}" class="nav-link">
+                <a href="{{ route('user.index', 'bendahara') }}" class="nav-link @if( Route::checkRoute('dashboard/user', 'bendahara') ) active @endif">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Bendahara</p>
                 </a>
               </li>
             @endcan  
               <li class="nav-item">
-                <a href="{{ route('sampah') }}" class="nav-link">
+                <a href="{{ route('sampah') }}" class="nav-link @if( Route::checkRoute('dashboard/sampah') ) active @endif">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Sampah</p>
                 </a>
