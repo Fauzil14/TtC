@@ -38,5 +38,5 @@ Route::prefix('dashboard')->middleware(['verified', 'can:management-web'])->grou
     Route::post('/sampah/update', 'SampahController@updateSampah')->name('update.sampah');
     Route::get('/sampah/delete/{sampah_id}', 'SampahController@delete')->name('delete.sampah');
 
-    // Route::get('/profile', '')
+    Route::get('/profile/{user_id}', 'ProfileController@profileUser')->name('profile.user');
 });

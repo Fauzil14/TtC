@@ -30,27 +30,6 @@ class UserController extends Controller
         }
     }
 
-    public function delete($user_id)
-    {
-
-        $user = User::findOrFail($user_id);
-        $role = $user->roles()->first()->name;
-        
-        try {
-            $user->delete();
-    
-            Alert::success('Berhasil', 'Data ' . $role . ' berhasil di hapus');
-            return back();
-        } catch(\Throwable $e) {
-            Alert::error('Gagal', 'Data ' . $role . ' gagal di hapus');
-        }
-    }
-
-    public function show($user_id)
-    {
-        User::findOrFail($user_id);
-    }
-
     public function tambahUser(Request $request, Client $client) 
     {
 
@@ -150,4 +129,22 @@ class UserController extends Controller
         Alert::success('Berhasil', 'Data ' . $user->roles()->first()->name . ' berhasil di update');
         return back();
     }
+
+
+    public function delete($user_id)
+    {
+
+        $user = User::findOrFail($user_id);
+        $role = $user->roles()->first()->name;
+        
+        try {
+            $user->delete();
+    
+            Alert::success('Berhasil', 'Data ' . $role . ' berhasil di hapus');
+            return back();
+        } catch(\Throwable $e) {
+            Alert::error('Gagal', 'Data ' . $role . ' gagal di hapus');
+        }
+    }
+
 }

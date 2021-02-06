@@ -159,7 +159,7 @@
                     <td>{{ $nasabah->created_at->translatedFormat('d/m/Y H:i') }}</td>
                     <td class="text-right py-0 align-middle">
                       <div class="btn-group btn-group-sm">
-                        <a href="#" class="btn btn-info"><i class="fas fa-eye"></i></a>
+                        <a href="{{ route('profile.user', $nasabah->id) }}" class="btn btn-info"><i class="fas fa-eye"></i></a>
                         @can('admin')
                           <a href="#"
                              data-toggle="modal" 

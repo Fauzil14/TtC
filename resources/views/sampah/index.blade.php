@@ -75,7 +75,10 @@
           <div class="small-box bg-success">
             <div class="inner">              
               <!-- $collection->pluck('relation_name') -->
-              <h3>{{ number_format($sampahs->pluck('gudang')->sum('total_berat'), 2, ',', ' ') }} <sub style="font-size: 20px">Kg</sub></h3>
+              <h3>
+                {{ Str::decimalForm($sampahs->pluck('gudang')->sum('total_berat')) }}
+                <sub style="font-size: 20px">Kg</sub>
+              </h3>
 
               <p>Stok Total Sampah</p>
             </div>
@@ -90,7 +93,8 @@
           <!-- small box -->
           <div class="small-box bg-warning">
             <div class="inner">
-              <h3>{{ number_format($bank->total_sampah_masuk, 2, ',', ' ') }} <sub style="font-size:20px">Kg</sub></h3>
+              <h3>{{ Str::decimalForm($bank->total_sampah_masuk) }} 
+                <sub style="font-size:20px">Kg</sub></h3>
 
               <p>Total Sampah Masuk</p>
             </div>
@@ -105,7 +109,7 @@
           <!-- small box -->
           <div class="small-box bg-danger">
             <div class="inner">
-              <h3>{{ number_format($bank->total_sampah_keluar, 2, ',', ' ') }} <sub style="font-size:20px">Kg</sub></h3>
+              <h3>{{ Str::decimalForm($bank->total_sampah_keluar) }} <sub style="font-size:20px">Kg</sub></h3>
 
               <p>Total Sampah Keluar</p>
             </div>

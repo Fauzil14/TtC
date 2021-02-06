@@ -4,8 +4,13 @@ namespace App\Providers;
 
 use App\User;
 use Carbon\Carbon;
+use NumberFormatter;
+use Carbon\PHPStan\Macro;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Validator;
+use Symfony\Component\CssSelector\Parser\Handler\NumberHandler;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -28,6 +33,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {   
+
+        /* Costum Validation */
         // Note : Validator::extend($par1 = "name of the rule", $par2 = extension, $par3 = "message")
         // $rule = the attribute name of the rule assign to
         // $value = the value of the attribute
@@ -56,6 +63,21 @@ class AppServiceProvider extends ServiceProvider
 
             return $result;
         }, "The selected user :custom_message");
+
+        
+        Str::macro('decimalForm', function($value, $is_currency = false) {
+            if( $is_currency == true ) {
+                $fmt = new NumberFormatter('id_ID', NumberFormatter::CURRENCY);
+                return $fmt->formatCurrency($value, "IDR");
+            } 
+            
+            if( is_numeric($value) && floor($value) != $value ) {
+                $decimals = (strlen($value) - strpos($value, '.')) - 1;
+                return number_format($value, $decimals, ',', '.');
+            } else {
+                return number_format($value, 0, ',', '.');
+            }
+        });
 
     }
 }
