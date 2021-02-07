@@ -5,13 +5,10 @@ namespace App\Providers;
 use App\User;
 use Carbon\Carbon;
 use NumberFormatter;
-use Carbon\PHPStan\Macro;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Validator;
-use Symfony\Component\CssSelector\Parser\Handler\NumberHandler;
 
 class AppServiceProvider extends ServiceProvider
 {
