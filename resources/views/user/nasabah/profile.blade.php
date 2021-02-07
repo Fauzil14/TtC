@@ -41,16 +41,16 @@
 
               <ul class="list-group list-group-unbordered mb-3">
                 <li class="list-group-item">
-                  <b>Total Penyetoran Sampah</b> <br> <a class="float-right">{{ Str::decimalForm($tabungan->sum('berat')) }} Kg</a>
+                  <b>Total Penyetoran Sampah</b> <br> <a class="float-right">{{ Str::decimalForm($tabungan->sum('berat')) ?? 0 }} Kg</a>
                 </li>
                 <li class="list-group-item">
-                  <b>Total Debit</b> <br> <a class="float-right">{{ Str::decimalForm($tabungan->sum('debet'), true) }}</a>
+                  <b>Total Debit</b> <br> <a class="float-right">{{ Str::decimalForm($tabungan->sum('debet') ?? 0, true) }}</a>
                 </li>
                 <li class="list-group-item">
-                  <b>Total Kredit</b> <br> <a class="float-right">{{ Str::decimalForm($tabungan->sum('kredit'), true) }}</a>
+                  <b>Total Kredit</b> <br> <a class="float-right">{{ Str::decimalForm($tabungan->sum('kredit') ?? 0, true) }}</a>
                 </li>
                 <li class="list-group-item">
-                  <b>Saldo</b> <br> <a class="float-right">{{ Str::decimalForm($tabungan->last()->saldo, true) }}</a>
+                  <b>Saldo</b> <br> <a class="float-right">{{ Str::decimalForm($tabungan->last()->saldo ?? 0 , true) }}</a>
                 </li>
               </ul>
 
