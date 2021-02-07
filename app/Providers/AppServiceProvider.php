@@ -65,8 +65,9 @@ class AppServiceProvider extends ServiceProvider
         
         Str::macro('decimalForm', function($value, $is_currency = false) {
             if( $is_currency == true ) {
-                $fmt = new NumberFormatter('id_ID', NumberFormatter::CURRENCY);
+                $fmt = new NumberFormatter('in_ID', NumberFormatter::CURRENCY);
                 return $fmt->formatCurrency($value, "IDR");
+                // $fmt = numfmt_create('id_ID')
             } 
             
             if( is_numeric($value) && floor($value) != $value ) {
